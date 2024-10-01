@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// @relation (name: "ManagerProjects", fields: [pid], references: [uid])
+
+model Project {
+  pid          String   @id @default(uuid())
+  name         String
+  description  String
+  model        String // This could be an enum depending on your model structure
+  phase        String
+  created_time DateTime @default(now())
+
+  //Relationships
+  tasks       Task[]
+  files       File[]
+  manager_ids User[] @relation("ManagerProjects")
+  members     User[] @relation("MemberProjects")
+}
+
+model User {
+  uid          String  @id @default(uuid())
+  username     String  @unique
+  password     String
+  google_id    String?
+  email        String
+  login_method String  @default("LOCAL") // Could be an enum (e.g., "GOOGLE", "LOCAL")
+
+  //Relationships
+  managed_projects Project[] @relation("ManagerProjects")
+  project_ids      Project[] @relation("MemberProjects")
+  files            File[]
+  tasks            Task[] //May not be used
+}
+
+model File {
+  fid       String @id @default(uuid())
+  name      String
+  extention String
+  size      String
+
+  //Relationships
+  project       Project  @relation(fields: [project_pid], references: [pid])
+  project_pid   String
+  task          Task     @relation(fields: [task_tid], references: [tid])
+  task_tid      String
+  uploader      User     @relation(fields: [uploader_id], references: [uid])
+  uploader_id   String
+  uploaded_time DateTime @default(now())
+}
+
+model Task {
+  tid          String   @id @default(uuid())
+  name         String
+  description  String
+  status       String
+  created_time DateTime @default(now())
+  due          DateTime
+
+  //Relationships
+  files       File[]
+  project     Project @relation(fields: [project_pid], references: [pid])
+  project_pid String
+  assignee    User    @relation(fields: [assignee_id], references: [uid])
+  assignee_id String
+}
+
+//What I've learnt
+//1. On mapping, the rule is the same on textbook, the 1-N relationship is mapped on the N side
+//2. For the N-M relationship, the mapping is done on the junction table
+//  if the relationship doesn;t have personal attributes, it can be done implicitly
