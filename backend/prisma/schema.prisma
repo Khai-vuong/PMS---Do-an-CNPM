@@ -55,19 +55,19 @@ model User {
 }
 
 model File {
-  fid       String @id @default(uuid())
-  name      String
-  extention String
-  size      String
+  fid           String   @id @default(uuid())
+  name          String
+  extention     String
+  size          String
+  uploaded_time DateTime @default(now())
 
   //Relationships
-  project       Project  @relation(fields: [project_pid], references: [pid])
-  project_pid   String
-  task          Task     @relation(fields: [task_tid], references: [tid])
-  task_tid      String
-  uploader      User     @relation(fields: [uploader_id], references: [uid])
-  uploader_id   String
-  uploaded_time DateTime @default(now())
+  project     Project @relation(fields: [project_pid], references: [pid])
+  project_pid String
+  task        Task    @relation(fields: [task_tid], references: [tid])
+  task_tid    String
+  uploader    User    @relation(fields: [uploader_id], references: [uid])
+  uploader_id String
 }
 
 model Task {
