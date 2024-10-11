@@ -19,8 +19,8 @@ frontend/build/
 backend/build/
 
 # Environment variables
-frontend/.env
-backend/.env
+# frontend/.env
+# backend/.env
 
 # IDEs and editors
 .vscode/
