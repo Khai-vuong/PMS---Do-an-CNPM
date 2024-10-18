@@ -48,6 +48,8 @@ export class AuthController {
     @Post('logout')
     async logout(@Request() req: any, @Session() session: Record<string, any>) {
         session.authenticated = false;
+        req.session.destroy();
+        req.user = null;
         return { message: "Logged out" };
     }
 
