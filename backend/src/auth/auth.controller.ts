@@ -10,10 +10,10 @@ export class AuthController {
 
     @Post('login')
     async login(
-        @Body() input: { username: string, password: string },
+        @Body() input: LoginDTO,
         @Request() req: any,
         @Session() session: Record<string, any>) {
-        const user = await this.authService.validateUser(input.username, input.password);
+        const user = await this.authService.validateUser(input);
 
         if (user) {
             session.authenticated = true;
