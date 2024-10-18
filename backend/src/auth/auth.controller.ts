@@ -2,6 +2,7 @@ import { Body, Controller, Post, Request, UseGuards, Session } from '@nestjs/com
 import { AuthService } from './auth.service';
 import { LocalGuard } from 'src/utils/local.guard';
 import { GetUser } from 'src/utils/get-user.decorator';
+import { LoginDTO } from 'src/login/dtos/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,11 +29,11 @@ export class AuthController {
         }
     }
 
-    // @Post('signup')
-    // async signup(@Body() input: { username: string, password: string }) {
-    //     const user = await this.authService.createUser(input.username, input.password);
-    //     return user;
-    // }
+    @Post('signup')
+    async signup(@Body() input: LoginDTO) {
+        const user = await this.authService.signup(input);
+        return user;
+    }
 
     @UseGuards(LocalGuard)
     @Post('test')
