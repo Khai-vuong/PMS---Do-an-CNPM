@@ -18,8 +18,6 @@ export class AuthController {
         if (user) {
             session.authenticated = true;
             req.user = user;
-            console.log('/auth');
-            console.log(req.user);
             return req.user;
         }
 

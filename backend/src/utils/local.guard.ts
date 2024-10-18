@@ -8,17 +8,13 @@ export class LocalGuard extends AuthGuard('local') {
     }
 
     async canActivate(context: ExecutionContext) {
-
         const request = context.switchToHttp().getRequest();
 
-        if (!request.session.authenticated) { console.log('not authenticated'); return false; }
+        if (!request.session.authenticated) { return false; }
 
         const result = (await super.canActivate(context)) as boolean;
-
         await super.logIn(request);
 
-
-        console.log('from local auth' + request.user)
         return result;
     }
 }

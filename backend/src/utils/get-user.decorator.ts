@@ -6,8 +6,6 @@ export const GetUser = createParamDecorator(
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
-        console.log('from decorator: ' + user);
-
         // If a specific property is requested (like user.id), return that
         return data ? user?.[data] : user;
     },
