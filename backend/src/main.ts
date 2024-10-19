@@ -11,7 +11,7 @@ async function bootstrap() {
       secret: 'TRUONGDAIHOCKYTHUATHANGDAUMIENNAM',
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 60000 }, // 60 sec
+      cookie: { maxAge: 100000 }, // 60 sec
     }),
   );
   app.use(passport.initialize());
