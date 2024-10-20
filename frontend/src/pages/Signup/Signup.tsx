@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import axios from "axios";
 import "./Signup.css";
 
 const Signup = () => {
@@ -24,7 +25,27 @@ const Signup = () => {
     setUser("");
     setPwd("");
     setSuccess(true);
+
+    try {
+      const response = await axios.post("http://localhost:5000/signup", {
+        username: user,
+        password: pwd,
+      });
+      console.log(response.data);
+
+      setSuccess(true);
+      setUser("");
+      setPwd("");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErrMsg(error.response?.data?.message || "Registration failed");
+      } else {
+        setErrMsg("Registration failed");
+      }
+      errRef.current?.focus();
+    }
   };
+
   return (
     <>
       {success ? (
