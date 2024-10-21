@@ -1,0 +1,10 @@
+DEV LOG
+
+18/10
+Về session: session và user's info được lưu trên Request object, được giữ dưới dạng cookie,
+serialize và deserialize một cách nào đó
+Ta dùng PassportStrategy và AuthGuard để kích hoạt cơ chế lưu info khi đăng nhập
+Cài đặt session ở main.ts
+
+ĐỪNG BAO GIỜ ĐỤNG CÁC FILE LIÊN QUAN ĐẾN AUTH (UTILS, AUTH,...)
+t code cái này 5h rồi ấy!!!
