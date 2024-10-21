@@ -1,4 +1,4 @@
-#root{
+/* #root{
     height: 100vh;
     width: 100%;
     display: flex;
@@ -6,11 +6,15 @@
     align-items: center;
     font-family: 'Roboto', sans-serif;
     background-image: url(./logoo.jpg);
-}
+} */
+
+/* Bro đừng chỉnh root chứ, chỉnh cục bộ bên ô thôi */
 * {
-    box-sizing: border-box; /* Áp dụng cho tất cả các phần tử để đảm bảo kích thước hợp lý */
+    box-sizing: border-box;
+    /* Áp dụng cho tất cả các phần tử để đảm bảo kích thước hợp lý */
 }
-.success{
+
+.success {
     width: 350px;
     height: 200px;
     display: flex;
@@ -21,13 +25,15 @@
     color: white;
     font-family: 'Brush Script MT', cursive;
 }
-.gohome a{
+
+.gohome a {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
     text-decoration: underline;
     color: rgb(255, 255, 255);
 }
-.container{
+
+.container {
     width: 500px;
     height: 400px;
     display: flex;
@@ -37,25 +43,29 @@
     border-radius: 10px;
     background-color: rgba(65, 62, 62, 0.7);
 }
-.create{
+
+.create {
     font-size: 200%;
     font-weight: bold;
     display: flex;
     justify-content: center;
     color: rgb(103, 218, 189);
 }
-form{
+
+form {
     width: 90%;
     margin-left: 20px;
     margin-top: 20px;
 }
-form label{
+
+form label {
     display: flex;
     margin-top: 10px;
     font-size: 18px;
     color: white;
 }
-form input{
+
+form input {
     width: 100%;
     border: 1px solid gray;
     padding: 10px;
@@ -63,7 +73,9 @@ form input{
     box-sizing: border-box;
     font-size: 16px;
 }
-input[type="button"], input[type="submit"]{
+
+input[type="button"],
+input[type="submit"] {
     appearance: none;
     width: 30%;
     margin-top: 35px;
@@ -76,17 +88,22 @@ input[type="button"], input[type="submit"]{
     cursor: pointer;
     transition: opacity 0.1s;
 }
-input[type="button"]:active,  input[type="submit"]:active{
+
+input[type="button"]:active,
+input[type="submit"]:active {
     opacity: 0.7;
 }
-input[type="button"]:hover, input[type="submit"]:hover{
+
+input[type="button"]:hover,
+input[type="submit"]:hover {
     background-color: #37917a;
     border-radius: 5px;
     font-size: 20px;
 }
-.buttons{
-    width: 90%; 
-    display: flex; 
-    justify-content: space-between; 
+
+.buttons {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
     margin-left: 10px;
 }
