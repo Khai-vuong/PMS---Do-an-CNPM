@@ -27,22 +27,24 @@ const Signup = () => {
     setSuccess(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/signup", {
+      const response = await axios.post("http://localhost:4000/auth/signup", {
         username: user,
         password: pwd,
       });
       console.log(response.data);
-
-      setSuccess(true);
-      setUser("");
-      setPwd("");
-    } catch (error) {
+    }
+    catch (error) {
       if (axios.isAxiosError(error)) {
         setErrMsg(error.response?.data?.message || "Registration failed");
       } else {
         setErrMsg("Registration failed");
       }
       errRef.current?.focus();
+    }
+    finally {
+      setSuccess(true);
+      setUser("");
+      setPwd("");
     }
   };
 
@@ -52,7 +54,7 @@ const Signup = () => {
         <div className="success">
           <h1>Sign up succesfull</h1>
           <div className="gohome">
-            <a href="">Go to home</a>
+            <a href="/">Go to home</a>
           </div>
         </div>
       ) : (
