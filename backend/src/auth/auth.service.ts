@@ -7,19 +7,7 @@ import { LoginDTO } from 'src/login/dtos/login.dto';
 export class AuthService {
     constructor(private readonly prisma: PrismaService) { }
 
-    //Change logic from Tuan
-    // async validateUser(username: string, password: string): Promise<any> {
-
-    //     const user = await this.prisma.user.findUnique({
-    //         where: { username },
-    //     });
-
-    //     if (user && user.password === password) {
-    //         return user;
-    //     }
-    //     return null;
-    // }
-
+    //Copied logic from Tuan
     async validateUser(data: LoginDTO): Promise<User> {
         const user = await this.prisma.user.findUnique({
             where: {
@@ -40,8 +28,6 @@ export class AuthService {
         return user;
     }
 
-
-
     //Copied from Son
     async signup(createUser: LoginDTO): Promise<User> {
         const existedUser = await this.prisma.user.findUnique({ where: { username: createUser.username } });
@@ -55,5 +41,9 @@ export class AuthService {
                 email: ""
             },
         });
+    }
+
+    isAuthenticated(request: any): boolean {
+        return !!request.user;
     }
 }

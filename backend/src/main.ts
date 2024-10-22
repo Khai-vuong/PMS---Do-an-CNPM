@@ -6,16 +6,9 @@ import * as passport from 'passport';
 import * as RedisStore from 'connect-redis';
 import * as pgSession from 'connect-pg-simple';
 
-
-
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // const redisClient = createClient();
-  // await redisClient.connect();
-
-  // const redisStore = RedisStore(session);
 
 
   app.enableCors({
@@ -27,20 +20,16 @@ async function bootstrap() {
 
   app.use(
     session({
-      store: new PgStore({
-        conString: process.env.DATABASE_URL,
-        createTableIfMissing: true,
-      }),
       secret: 'TRUONGDAIHOCKYTHUATHANGDAUMIENNAM',
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 60 * 60 * 1000 }, //1 hour
+      cookie: { maxAge: 2 * 60 * 1000 }, //2 minutes
     }),
   );
   app.use(passport.initialize());
   app.use(passport.session());
 
-  await app.listen(4000); //must be at last line}
+  await app.listen(4000);
 }
 bootstrap();
 

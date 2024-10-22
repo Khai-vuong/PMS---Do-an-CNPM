@@ -1,5 +1,6 @@
-// auth/decorators/get-user.decorator.ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+//Tested to be correct
 
 export const GetUser = createParamDecorator(
     (data: keyof Express.User | undefined, context: ExecutionContext) => {
