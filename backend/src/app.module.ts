@@ -6,6 +6,7 @@ import { LoginModule } from './login/login.module';
 import { AuthModule } from './auth/auth.module';
 import { SignupModule } from './signup/signup.module';
 import { PassportModule } from '@nestjs/passport';
+import { ProjectsModule } from './projects/projects.module';
 
 
 @Module({
@@ -14,6 +15,7 @@ import { PassportModule } from '@nestjs/passport';
     LoginModule,
     AuthModule,
     SignupModule,
+    ProjectsModule,
     PassportModule.register({ session: true })],
   controllers: [AppController],
   providers: [AppService],
