@@ -8,12 +8,16 @@ export class LocalGuard extends AuthGuard('local') {
     }
 
     async canActivate(context: ExecutionContext) {
+        console.log('LocalGuard');
+
         const request = context.switchToHttp().getRequest();
 
-        if (!request.session.authenticated) { return false; }
+        console.log(request.session);     //Third action set this to undefined
 
-        const result = (await super.canActivate(context)) as boolean;
-        await super.logIn(request);
+        // if (!request.session.authenticated) { return false; }
+
+        const result = (await super.canActivate(context)) as boolean;   //This call the Strategy validate method
+        await super.logIn(request);     //Setting cookie session
 
         return result;
     }

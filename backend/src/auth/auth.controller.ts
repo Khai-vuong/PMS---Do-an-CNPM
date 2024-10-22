@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards, Session } from '@nestjs/common';
+import { Body, Controller, Post, Request, Response, UseGuards, Session } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalGuard } from 'src/utils/local.guard';
 import { GetUser } from 'src/utils/get-user.decorator';
@@ -16,13 +16,13 @@ export class AuthController {
         const user = await this.authService.validateUser(input);
 
         if (user) {
-            session.authenticated = true;
+            // session.authenticated = true;
             req.user = user;
             return req.user;
         }
 
         else {
-            session.authenticated = false;
+            // session.authenticated = false;
             return { message: "Invalid credentials" };
         }
     }
@@ -43,13 +43,36 @@ export class AuthController {
         return user;
     }
 
+    // @UseGuards(LocalGuard)
+    // @Post('logout')
+    // async logout(@Request() req: any, @Session() session: Record<string, any>) {
+    //     // session.authenticated = false;
+    //     req.session.destroy();
+    //     req.user = null;
+    //     return { message: "Logged out" };
+    // }
+
     @UseGuards(LocalGuard)
     @Post('logout')
-    async logout(@Request() req: any, @Session() session: Record<string, any>) {
-        session.authenticated = false;
-        req.session.destroy();
-        req.user = null;
-        return { message: "Logged out" };
-    }
+    async logout(@Request() req: any, @Response() res: any) {
+        try {
+            req.logout((err) => {
+                if (err) {
+                    return res.status(500).json({ message: 'Logout failed', error: err });
+                }
 
+                req.session.destroy((err) => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Failed to destroy session', error: err });
+                    }
+
+                    // Clear the session cookie on the client side
+                    res.clearCookie('connect.sid'); // Use your session cookie name if different
+                    return res.status(200).json({ message: 'Logged out successfully' });
+                });
+            });
+        } catch (err) {
+            return res.status(500).json({ message: 'An error occurred during logout', error: err });
+        }
+    }
 }
