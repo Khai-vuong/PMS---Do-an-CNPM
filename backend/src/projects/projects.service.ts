@@ -8,12 +8,12 @@ import { CreateProjectDto } from "./dtos/create-projects.dto";
 export class ProjectsService {
     constructor(private prisma: PrismaService) { }
 
-    async createProject(user: User, createProjectDto: CreateProjectDto) {
+    async createProject(userID: string, createProjectDto: CreateProjectDto) {
         return await this.prisma.project.create({
             data: {
                 ...createProjectDto,
                 manager_ids: {
-                    connect: { uid: user.uid },
+                    connect: { uid: userID },
                 },
                 members: {
                     connect: createProjectDto.members?.map(memberId => ({ uid: memberId })) || [],
@@ -52,7 +52,7 @@ export class ProjectsService {
 
         if (!existingProject) {
             throw new Error(`Project with pid ${pid} not exist`);
-            return;
+
         }
 
         return await this.prisma.project.delete({
@@ -71,7 +71,7 @@ export class ProjectsService {
 
         if (!existingProject) {
             throw new Error(`Project with pid ${pid} not exist`);
-            return;
+
         }
 
         return existingProject;

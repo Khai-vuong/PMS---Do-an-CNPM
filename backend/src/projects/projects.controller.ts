@@ -16,22 +16,22 @@ export class ProjectsController {
         @GetUserID() user: any,
         @Body() input: any
     ) {
-        const { username, password, ...project } = input;
-        const createProjectDto: CreateProjectDto = project;
+        // const { username, password, ...project } = input;
+        const createProjectDto: CreateProjectDto = input;
         // console.log(user);
         // console.log(input);
         // console.log(createProjectDto);
-
+        // console.log(user);
         //Code bị ảnh hưởng, nhờ ô sửa dùm tui
-        // return this.projectsService.createProject(user as User, createProjectDto);
-        return true;
+        return this.projectsService.createProject(user.userID, createProjectDto);
+        // return true;
     }
 
     @UseGuards(LocalGuard)
     @Put(':pid')
     async updateProjectByPut(@Param('pid') pid: string, @Body() input: any) {
-        const { username, password, ...project } = input;
-        const updateProject: UpdateProjectDto = project;
+        // const { username, password, ...project } = input;
+        const updateProject: UpdateProjectDto = input;
 
         return this.projectsService.updateProject(pid, updateProject);
 
@@ -40,8 +40,8 @@ export class ProjectsController {
     @UseGuards(LocalGuard)
     @Patch(':pid')
     async updateProjectByPatch(@Param('pid') pid: string, @Body() input: any) {
-        const { username, password, ...project } = input;
-        const updateProject: UpdateProjectDto = project;
+        // const { username, password, ...project } = input;
+        const updateProject: UpdateProjectDto = input;
 
         return this.projectsService.updateProject(pid, updateProject);
 
