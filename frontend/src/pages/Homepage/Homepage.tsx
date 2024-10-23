@@ -15,7 +15,7 @@ const Homepage = () => {
 
     return (
         <>
-            <div className="container">
+            <div className="homepage__container">
                 <div className="header">
                     <img src="" alt="ICON" />
                     <div className="buttons">
