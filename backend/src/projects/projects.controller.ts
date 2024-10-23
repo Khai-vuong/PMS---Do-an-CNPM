@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { CreateProjectDto } from "./dtos/create-projects.dto";
-import { GetUser } from "src/utils/get-user.decorator";
+import { GetUserID } from "src/utils/get-user.decorator";
 import { User } from "@prisma/client";
 import { LocalGuard } from "src/utils/local.guard";
 import { UpdateProjectDto } from "./dtos/update-projects.dto";
@@ -13,7 +13,7 @@ export class ProjectsController {
     @UseGuards(LocalGuard)
     @Post('create')
     async createProject(
-        @GetUser() user: any,
+        @GetUserID() user: any,
         @Body() input: any
     ) {
         const { username, password, ...project } = input;
@@ -21,7 +21,10 @@ export class ProjectsController {
         // console.log(user);
         // console.log(input);
         // console.log(createProjectDto);
-        return this.projectsService.createProject(user as User, createProjectDto);
+
+        //Code bị ảnh hưởng, nhờ ô sửa dùm tui
+        // return this.projectsService.createProject(user as User, createProjectDto);
+        return true;
     }
 
     @UseGuards(LocalGuard)
