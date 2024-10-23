@@ -9,7 +9,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @Post('login')
-    async login(@Body() loginDTO: LoginDTO, @Response() res) {
+    async login(@Body() loginDTO: LoginDTO,) {
         const user = await this.authService.validateUser(loginDTO);
         if (!user) {
             //error handling
