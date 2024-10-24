@@ -1,69 +1,70 @@
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import Homepage from "./Homepage";
-// import Login from "./Login"; // Import trang Login
-
-// function App() {
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/" element={<Homepage />} />
-//         <Route path="auth/login" element={<Login />} />{" "}
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import axios from "axios";
+import "./Login.css";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [error, setError] = (useState < string) | (null > null);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    setError(""); // Xóa lỗi trước khi gửi yêu cầu
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:4000/auth/signup", {
+      const response = await axios.post("https://example.com/api/login", {
         username,
         password,
       });
 
-      // Lưu token vào localStorage (ví dụ)
-      localStorage.setItem("token", response.data.token);
+      console.log("Login successful:", response.data);
 
-      // Điều hướng đến trang chủ
-      navigate("/");
-    } catch (error) {
-      setError("Tên đăng nhập hoặc mật khẩu không đúng.");
+      localStorage.setItem("token", response.data.token);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.message || "Đăng nhập thất bại");
+      } else {
+        setError("Đã có lỗi xảy ra");
+      }
+      console.error("Error:", err);
     }
   };
 
   return (
-    <div>
-      <h2>Đăng nhập</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <button type="submit">Đăng nhập</button>
+    <div className="login-container">
+      <h1>Login</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="input-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Sign in</button>
       </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+      {/* Hiển thị lỗi nếu có */}
+      <div className="links">
+        <a href="#">
+          <u>Forgot password?</u>
+        </a>
+        <a href="#">
+          <u>Do not have an account? Sign up</u>
+        </a>
+      </div>
     </div>
   );
 };
