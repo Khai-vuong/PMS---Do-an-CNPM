@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios"; 
+import axios from "axios";
 import "./Login.css";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null); 
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,12 +16,10 @@ const Login = () => {
         password,
       });
 
-
       console.log("Login successful:", response.data);
 
       localStorage.setItem("token", response.data.token);
     } catch (err) {
-
       if (axios.isAxiosError(err)) {
         setError(err.response?.data.message || "Đăng nhập thất bại");
       } else {
