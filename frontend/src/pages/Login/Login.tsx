@@ -16,12 +16,10 @@ const Login = () => {
         password: password
       });
 
-
       console.log("Login successful:", response.data);
 
       localStorage.setItem("token", response.data.token);
     } catch (err) {
-
       if (axios.isAxiosError(err)) {
         setError(err.response?.data.message || "Đăng nhập thất bại");
       } else {
