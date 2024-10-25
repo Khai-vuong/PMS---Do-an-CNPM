@@ -18,9 +18,7 @@ const Login = () => {
       });
       const { token } = response.data;
       if (token) {
-        // Save token to localStorage
         localStorage.setItem("token", token);
-        // Navigate to home page
         navigate("/");
       } else {
         setError("Login failed: No token received.");
