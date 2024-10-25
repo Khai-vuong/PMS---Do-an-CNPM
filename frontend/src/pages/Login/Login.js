@@ -8,23 +8,25 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError(""); // Xóa lỗi trước khi gửi yêu cầu
-
+    setError(""); // Clear any previous errors
     try {
-      const response = await axios.post("http://localhost:4000/auth/signup", {
+      const response = await axios.post("http://localhost:4000/auth/login", {
         username,
         password,
       });
-
-      // Lưu token vào localStorage (ví dụ)
-      localStorage.setItem("token", response.data.token);
-
-      // Điều hướng đến trang chủ
-      navigate("/");
+      const { token } = response.data;
+      if (token) {
+        // Save token to localStorage
+        localStorage.setItem("token", token);
+        // Navigate to home page
+        navigate("/");
+      } else {
+        setError("Login failed: No token received.");
+      }
     } catch (error) {
-      setError("Tên đăng nhập hoặc mật khẩu không đúng.");
+      setError("Invalid username or password.");
     }
   };
 
