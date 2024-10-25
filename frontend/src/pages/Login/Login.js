@@ -19,7 +19,7 @@ const Login = () => {
       const { token } = response.data;
       if (token) {
         localStorage.setItem("token", token);
-        navigate("/");
+        navigate("/projects");
       } else {
         setError("Login failed: No token received.");
       }
