@@ -1,10 +1,10 @@
 stages:
   - test
   - build
-  - deploy
 
 test_job:
   stage: test
+  image: node:21
   script:
     - echo "Running tests..."
     - npm install
