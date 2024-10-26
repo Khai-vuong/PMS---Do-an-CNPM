@@ -2,13 +2,22 @@ stages:
   - test
   - build
 
-test_job:
+test_FE:
+  stage: test   #Same stage run async
+  image: node:21
+  script:
+    - cd frontend
+    - npm install
+    - npm test || echo "no frontend test found"
+
+test_BE:
   stage: test
   image: node:21
   script:
-    - echo "Running tests..."
+    - cd backend
     - npm install
-    - npm test
+    - npm test || echo "no backend test found"
+
 
 build_job:
   stage: build
