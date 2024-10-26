@@ -22,4 +22,8 @@
   export class PageDTO<T> {
     data: T[];
     metadata: PageMetaDTO;
+    constructor(data: T[], metadata: PageMetaDTO) {
+        this.data = data;
+        this.metadata = metadata;
+    }
 }

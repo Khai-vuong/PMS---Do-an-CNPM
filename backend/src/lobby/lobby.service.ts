@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { TaskReturnDTO } from './dtos/page.dto';
+import { PageDTO, TaskReturnDTO } from './dtos/page.dto';
 
 
 @Injectable()
@@ -50,6 +50,15 @@ export class LobbyService {
             const assigneeUsername = await this.getUserName(task.assignee_id);
             return new TaskReturnDTO(task.name, task.description, assigneeUsername);
           }));
-        return taskReturnData;
+        const pageCount = Math.ceil(tasks.length / perPage);
+        const pageMeta = {
+            pageCount: pageCount,
+            pageSize: perPage,
+            currentPage: pagenum,
+            hasPreviousPage: pagenum > 1,
+            hasNextPage: pagenum < pageCount
+        };
+        const returnData = new PageDTO<TaskReturnDTO>(taskReturnData, pageMeta);
+        return returnData;
     }
 }
