@@ -19,9 +19,10 @@
     height: 200px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     border-radius: 10px;
-    background-color: rgba(23, 196, 153);
+    background-color: #0056b3;
     color: white;
     font-family: 'Brush Script MT', cursive;
 }
@@ -32,8 +33,21 @@
     text-decoration: underline;
     color: rgb(255, 255, 255);
 }
+.wrapper{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    background-image: url(./logoo.jpg);
 
-.container {
+
+}
+.table {
     width: 500px;
     height: 400px;
     display: flex;
@@ -41,7 +55,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    background-color: rgba(65, 62, 62, 0.7);
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(2px);
 }
 
 .create {
@@ -49,7 +64,7 @@
     font-weight: bold;
     display: flex;
     justify-content: center;
-    color: rgb(103, 218, 189);
+    color: #0056b3;
 }
 
 form {
@@ -62,7 +77,7 @@ form label {
     display: flex;
     margin-top: 10px;
     font-size: 18px;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 form input {
@@ -82,7 +97,7 @@ input[type="submit"] {
     border: none;
     display: flex;
     align-items: center;
-    background-color: #49c1a2;
+    background-color: #0056b3;
     color: white;
     font-size: 17px;
     cursor: pointer;
@@ -96,7 +111,7 @@ input[type="submit"]:active {
 
 input[type="button"]:hover,
 input[type="submit"]:hover {
-    background-color: #37917a;
+    background-color: #0056b3;
     border-radius: 5px;
     font-size: 20px;
 }

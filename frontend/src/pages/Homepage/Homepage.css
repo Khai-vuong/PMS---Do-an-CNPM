@@ -1,4 +1,8 @@
-.container {
+
+.container-homepage {
+    position: absolute;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -95,9 +99,9 @@
 
 .quote {
     text-align: center;
-    margin: 20px 0;
+    margin:0;
     font-size: 1.2rem;
-    width: 80%;
+    width: 100%;
 
     background-color: #9e9e9e;
     color: #f2f2f2
