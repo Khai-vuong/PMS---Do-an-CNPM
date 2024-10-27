@@ -18,6 +18,7 @@ export class AuthController {
     }
 
     //Copies from Son
+    @Post('signup')
     async signup(@Body(ValidationPipe) user: LoginDTO): Promise<User> {
         return this.authService.signup(user);
     }
