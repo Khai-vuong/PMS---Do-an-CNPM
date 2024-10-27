@@ -1,26 +1,18 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { LoginReturnDTO } from 'DTOs/LoginReturn.dto';
 import { PrismaService } from 'prisma/prisma.service';
-import { LoginDTO } from 'src/login/dtos/login.dto';
-
+import { LoginDTO } from 'DTOs/Login.dto';
 @Injectable()
 export class AuthService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly jwtService: JwtService
+    ) { }
 
-    //Change logic from Tuan
-    // async validateUser(username: string, password: string): Promise<any> {
-
-    //     const user = await this.prisma.user.findUnique({
-    //         where: { username },
-    //     });
-
-    //     if (user && user.password === password) {
-    //         return user;
-    //     }
-    //     return null;
-    // }
-
-    async validateUser(data: LoginDTO): Promise<User> {
+    //Copied logic from Tuan
+    async validateUser(data: LoginDTO): Promise<LoginReturnDTO> {
         const user = await this.prisma.user.findUnique({
             where: {
                 username: data.username
@@ -37,10 +29,22 @@ export class AuthService {
             throw new HttpException({ message: "Password is incorrect" }, HttpStatus.UNAUTHORIZED)
         }
 
-        return user;
+        return await this.signin(user);
     }
 
+    async signin(user: User): Promise<LoginReturnDTO> {
+        const payload = {       //Sign payload
+            sub: user.uid,
+            username: user.username,
+        };
 
+        const jwttoken = await this.jwtService.signAsync(payload);
+        return {
+            userID: user.uid,
+            username: user.username,
+            token: jwttoken
+        }
+    }
 
     //Copied from Son
     async signup(createUser: LoginDTO): Promise<User> {

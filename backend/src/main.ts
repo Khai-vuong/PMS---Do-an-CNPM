@@ -1,22 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as session from 'express-session';
-import * as passport from 'passport';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
-  app.use(
-    session({
-      secret: 'TRUONGDAIHOCKYTHUATHANGDAUMIENNAM',
-      resave: false,
-      saveUninitialized: false,
-      cookie: { maxAge: 60000 }, // 60 sec
-    }),
-  );
-  app.use(passport.initialize());
-  app.use(passport.session());
+  app.enableCors({
+    origin: 'http://localhost:5173', // Or your frontend URL
+    credentials: true, // Allow credentials (cookies)
+  });
 
   await app.listen(4000); //must be at last line}
 }
