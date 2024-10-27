@@ -25,3 +25,12 @@ Chuyển tất cả các DTOs về src/DTOs
 Xóa Login Module và Signup Module, tích hợp vào Auth Module
 
 Tính năng logout đưa qua bên Frontend
+
+
+26/10
+Dự kiến:
+Task.status deafault = 'Undone'
+Task.due = created_time + 7d
+Thêm Task.comment (Có thể null)
+
+Giao việc:

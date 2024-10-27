@@ -3,12 +3,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
+import { TestModule } from './test/test.module';
+import { LobbyModule } from './lobby/lobby.module';
 
 
 @Module({
   imports: [
     AuthModule,
     ProjectsModule,
+    TestModule,
+    LobbyModule
   ],
   controllers: [AppController],
   providers: [AppService],
