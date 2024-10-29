@@ -1,10 +1,16 @@
 // page.dto.ts
 
-export class PageParamDTO {
-    currentPage: number = 1;
-    pageSize: number = 5;
-}
-  
+
+  export class TaskReturnDTO {
+    name : string;
+    description : string;
+    assignee : string;
+    constructor(name: string, description: string, assignee: string) {
+        this.name = name;
+        this.description = description;
+        this.assignee = assignee;
+    }
+  }
   export class PageMetaDTO {
     pageCount: number;
     pageSize: number;
@@ -16,4 +22,8 @@ export class PageParamDTO {
   export class PageDTO<T> {
     data: T[];
     metadata: PageMetaDTO;
+    constructor(data: T[], metadata: PageMetaDTO) {
+        this.data = data;
+        this.metadata = metadata;
+    }
 }
