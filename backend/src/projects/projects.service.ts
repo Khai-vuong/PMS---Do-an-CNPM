@@ -1,19 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "prisma/prisma.service";
-import { User } from "@prisma/client";
-import { UpdateProjectDto } from "./dtos/update-projects.dto";
-import { CreateProjectDto } from "./dtos/create-projects.dto";
+import { CreateProjectDto } from "DTOs/create-projects.dto";
+import { UpdateProjectDto } from "DTOs/update-projects-dto";
+import { ProjectsListDto } from "DTOs/projects-list.dto";
 
 @Injectable()
 export class ProjectsService {
     constructor(private prisma: PrismaService) { }
 
-    async createProject(user: User, createProjectDto: CreateProjectDto) {
+    async createProject(userID: string, createProjectDto: CreateProjectDto) {
         return await this.prisma.project.create({
             data: {
                 ...createProjectDto,
                 manager_ids: {
-                    connect: { uid: user.uid },
+                    connect: { uid: userID },
                 },
                 members: {
                     connect: createProjectDto.members?.map(memberId => ({ uid: memberId })) || [],
@@ -22,13 +22,18 @@ export class ProjectsService {
         });
     }
 
-    async updateProject(pid: string, updateProjectDto: UpdateProjectDto) {
+    async updateProject(userID: string, pid: string, updateProjectDto: UpdateProjectDto) {
         const existingProject = await this.prisma.project.findUnique({
+            include: { manager_ids: true },
             where: { pid },
         });
 
         if (!existingProject) {
-            throw new Error(`Project with pid ${pid} not found`);
+            throw new HttpException(`Project with pid ${pid} not found`, HttpStatus.NOT_FOUND);
+        }
+
+        if (!existingProject.manager_ids.some(manager => manager.uid === userID)) {
+            throw new HttpException(`You are not the manager of this project.`, HttpStatus.FORBIDDEN);
         }
 
         return await this.prisma.project.update({
@@ -45,14 +50,18 @@ export class ProjectsService {
         });
     }
 
-    async deleteProject(pid: string) {
+    async deleteProject(userID: string, pid: string) {
         const existingProject = await this.prisma.project.findUnique({
+            include: { manager_ids: true },
             where: { pid },
         });
 
         if (!existingProject) {
-            throw new Error(`Project with pid ${pid} not exist`);
-            return;
+            throw new HttpException(`Project with pid ${pid} not found`, HttpStatus.NOT_FOUND);
+        }
+
+        if (!existingProject.manager_ids.some(manager => manager.uid === userID)) {
+            throw new HttpException(`You are not the manager of this project.`, HttpStatus.FORBIDDEN);
         }
 
         return await this.prisma.project.delete({
@@ -60,20 +69,39 @@ export class ProjectsService {
         })
     }
 
-    async listProjects() {
-        return await this.prisma.project.findMany();
+    async listProjects(userID: string) {
+        const listProjects = await this.prisma.project.findMany({
+            include: {
+                manager_ids: true
+            },
+        });
+
+        const projectsInfo: ProjectsListDto[] = listProjects.map(project => {
+            const { name, model, phase, manager_ids } = project;
+            const role = manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : 'Member';
+            return { name, model, phase, role };
+        });
+
+        return projectsInfo;
     }
 
-    async getProject(pid: string) {
+    async getProject(userID: string, pid: string) {
         const existingProject = await this.prisma.project.findUnique({
+            include: { manager_ids: true },
             where: { pid },
         });
 
         if (!existingProject) {
-            throw new Error(`Project with pid ${pid} not exist`);
-            return;
+            throw new HttpException(`Project with pid ${pid} not found`, HttpStatus.NOT_FOUND);
         }
 
-        return existingProject;
+        const projectInfo: ProjectsListDto = {
+            name: existingProject.name,
+            model: existingProject.model,
+            phase: existingProject.phase,
+            role: existingProject.manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : 'Member',
+        };
+
+        return projectInfo;
     }
 }

@@ -1,14 +1,16 @@
-import { Controller, Post } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
 import { TestService } from './test.service';
 
 @Controller('test')
 export class TestController {
-    constructor(private testService: TestService) { }
+    constructor(private readonly testService: TestService) { }
 
-    @Post("test")
-    async uploadNigga() {
-        await this.testService.uploadNigga();
-        return "Uploaded";
+    @Get()
+    async generate(@Query('pid') pid: string) {
+        if (!pid) {
+            throw new BadRequestException('Project ID (pid) is required');
+        }
+
+        return this.testService.generate(pid);
     }
-
 }

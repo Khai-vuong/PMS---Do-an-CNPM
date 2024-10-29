@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
-import { CreateProjectDto } from "./dtos/create-projects.dto";
-import { GetUser } from "src/utils/get-user.decorator";
-import { User } from "@prisma/client";
+import { GetUserID } from "src/utils/get-user.decorator";
 import { LocalGuard } from "src/utils/local.guard";
-import { UpdateProjectDto } from "./dtos/update-projects.dto";
+import { CreateProjectDto } from "DTOs/create-projects.dto";
+import { UpdateProjectDto } from "DTOs/update-projects-dto";
 
 @Controller('projects')
 export class ProjectsController {
@@ -13,52 +12,47 @@ export class ProjectsController {
     @UseGuards(LocalGuard)
     @Post('create')
     async createProject(
-        @GetUser() user: any,
+        @GetUserID() user: any,
         @Body() input: any
     ) {
-        const { username, password, ...project } = input;
-        const createProjectDto: CreateProjectDto = project;
-        // console.log(user);
-        // console.log(input);
-        // console.log(createProjectDto);
-        return this.projectsService.createProject(user as User, createProjectDto);
+        const createProjectDto: CreateProjectDto = input;
+
+        return this.projectsService.createProject(user.userID, createProjectDto);
     }
 
     @UseGuards(LocalGuard)
     @Put(':pid')
-    async updateProjectByPut(@Param('pid') pid: string, @Body() input: any) {
-        const { username, password, ...project } = input;
-        const updateProject: UpdateProjectDto = project;
+    async updateProjectByPut(@GetUserID() user: any, @Param('pid') pid: string, @Body() input: any) {
+        // const { username, password, ...project } = input;
+        const updateProject: UpdateProjectDto = input;
 
-        return this.projectsService.updateProject(pid, updateProject);
-
+        return this.projectsService.updateProject(user.userID, pid, updateProject);
     }
 
     @UseGuards(LocalGuard)
     @Patch(':pid')
-    async updateProjectByPatch(@Param('pid') pid: string, @Body() input: any) {
-        const { username, password, ...project } = input;
-        const updateProject: UpdateProjectDto = project;
+    async updateProjectByPatch(@GetUserID() user: any, @Param('pid') pid: string, @Body() input: any) {
+        // const { username, password, ...project } = input;
+        const updateProject: UpdateProjectDto = input;
 
-        return this.projectsService.updateProject(pid, updateProject);
-
+        return this.projectsService.updateProject(user.userID, pid, updateProject);
     }
 
     @UseGuards(LocalGuard)
     @Delete(':pid')
-    async deleteProject(@Param('pid') pid: string) {
-        return this.projectsService.deleteProject(pid);
+    async deleteProject(@GetUserID() user: any, @Param('pid') pid: string) {
+        return this.projectsService.deleteProject(user.userID, pid);
     }
 
     @UseGuards(LocalGuard)
     @Get('list')
-    async listProjects() {
-        return this.projectsService.listProjects();
+    async listProjects(@GetUserID() user: any) {
+        return this.projectsService.listProjects(user.userID);
     }
 
     @UseGuards(LocalGuard)
     @Get(':pid')
-    async getProject(@Param('pid') pid: string) {
-        return this.projectsService.getProject(pid);
+    async getProject(@GetUserID() user: any, @Param('pid') pid: string) {
+        return this.projectsService.getProject(user.userID, pid);
     }
 }
