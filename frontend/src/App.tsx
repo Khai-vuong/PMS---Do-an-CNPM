@@ -4,6 +4,7 @@ import "./index.css";
 import Signup from "./pages/Signup/Signup.tsx";
 import Homepage from "./pages/Homepage/Homepage.tsx";
 import Login from "./pages/Login/Login.tsx";
+import Createproject from "./pages/Createproject/Createproject.tsx";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Homepage />}></Route>
           <Route path="/auth/signup" element={<Signup />}></Route>
           <Route path="/auth/login" element={<Login />}></Route>
+          <Route path="/create-project" element={<Createproject />}></Route>
         </Routes>
       </Router>
     </>

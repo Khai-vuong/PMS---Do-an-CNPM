@@ -1,0 +1,102 @@
+.create-project-page {
+  width: 80%;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background-color: #005eff;
+  color: white;
+  padding: 15px;
+}
+
+.logo {
+  width: 50px;
+  margin-right: auto;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.profile-pic {
+  width: 30px;
+  height: 30px;
+  background-color: #333;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+h2 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.model-options {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.model-options button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.model-options .active {
+  background-color: #005eff;
+  color: white;
+}
+
+.model-illustration {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.model-illustration img {
+  width: 80%;
+  max-width: 400px;
+}
+
+.submit-btn {
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #218838;
+}
