@@ -6,7 +6,8 @@ const CreateProject: React.FC = () => {
   const [model, setModel] = useState("Waterfall");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định của form
     // Handle form submission
     console.log({
       projectName,
@@ -21,13 +22,13 @@ const CreateProject: React.FC = () => {
         <img src="path/to/logo.png" alt="Logo" className="logo" />
         <div className="user-info">
           <div className="profile-pic">[User Pic]</div>
-          <span className="username">LE VAN BACH KHOA</span>
+          <span className="username">Nguyen Van A</span>
         </div>
       </header>
 
       <h2>Create Project Page</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="project-form">
         <label>Project Name</label>
         <input
           type="text"
@@ -35,7 +36,6 @@ const CreateProject: React.FC = () => {
           onChange={(e) => setProjectName(e.target.value)}
           placeholder="Enter project name"
         />
-
         <label>Model</label>
         <div className="model-options">
           <button
@@ -53,19 +53,16 @@ const CreateProject: React.FC = () => {
             Scrum
           </button>
         </div>
-
         <div className="model-illustration">
-          <img src="./Createproject.pnj" alt="Waterfall Model" />
-          <p>Waterfall Model in Software Engineering</p>
+          <img src="./Createproject.png" alt="Waterfall Model" />
+          <p>{model} Model in Software Engineering</p>
         </div>
-
         <label>Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter project description"
         ></textarea>
-
         <button type="submit" className="submit-btn">
           Create Project
         </button>
