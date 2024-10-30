@@ -6,6 +6,7 @@ import { AuthService } from "src/auth/auth.service";
 
 @Module({
     controllers: [ProjectsController],
-    providers: [ProjectsService, PrismaService, AuthService]
+    providers: [ProjectsService, PrismaService, AuthService],
+    exports: [ProjectsService]
 })
 export class ProjectsModule { }

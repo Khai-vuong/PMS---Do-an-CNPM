@@ -1,31 +1,140 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
+import { ProjectsService } from 'src/projects/projects.service';
+import { CreateProjectDto } from 'DTOs/create-projects.dto';
 
 @Injectable()
 export class TestService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly projectsService: ProjectsService
+    ) { }
 
-    async generate(pid: string) {
-        const project = await this.prisma.project.findUnique({
+    async generateTask(pid: string, uid: string) {
+        const findPRoject = this.prisma.project.findFirst({
             where: { pid },
         });
+
+        const findUser = this.prisma.user.findFirst({
+            where: { uid }
+        })
+
+        // Check if the task named 'generated' exists
+        const findGenerated = this.prisma.task.findFirst({
+            where: {
+                name: 'generated',
+            },
+        });
+
+        const [project, user, existingTask] = await Promise.all([findPRoject, findUser, findGenerated]);
 
         if (!project) {
             throw new NotFoundException(`Project with ID ${pid} not found`);
         }
 
-        // Create 14 tasks
-        const tasks = Array.from({ length: 14 }, (_, index) => ({
-            name: `${index + 1}`,
-            description: `description ${index + 1}`,
-            status: 'testing',
-            project_pid: pid,
-            due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            assignee_id: '3ee0cc4f-d990-4696-85b6-3c5483a2ace5',
-        }));
+        if (!user) {
+            throw new NotFoundException(`User with ID ${uid} not found`);
+        }
 
-        return this.prisma.task.createMany({
-            data: tasks,
+        if (!existingTask) {
+            await this.prisma.task.create({
+                data: {
+                    name: 'generated',
+                    description: 'This is a generated task',
+                    status: 'testing',
+                    project_pid: pid,
+                    due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                    assignee_id: uid,
+                },
+            });
+
+            // Create 13 tasks
+            const tasks = Array.from({ length: 13 }, (_, index) => ({
+                name: `${index + 1}`,
+                description: `description ${index + 1}`,
+                status: 'testing',
+                due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                assignee_id: uid,
+                project_pid: pid,
+            }));
+
+            return this.prisma.task.createMany({
+                data: tasks,
+                // assignee_id: { connect: { uid } },
+                // project_pid: { connect: { pid } },
+
+            });
+        }
+        else {
+            return { message: "This database is already generated" };
+        }
+
+
+    }
+
+    async generateUsers() {
+        const existingUser = await this.prisma.user.findUnique({
+            where: { username: 'generated' },
         });
+
+        if (!existingUser) {
+            const users = ['aaa', 'bbb', 'ccc', 'ddd', 'eee'].map(username => ({
+                username,
+                password: username,
+                email: '',
+            }));
+
+            users.push({
+                username: 'generated',
+                password: '111',
+                email: '',
+            });
+
+            return this.prisma.user.createMany({
+                data: users,
+            });
+        }
+    }
+
+    async generateProjects(uid: string) {
+        if (typeof uid !== 'string') {
+            throw new Error('userId must be a string, current type = ' + typeof uid);
+        }
+
+        const existingProject = await this.prisma.project.findFirst({
+            where: { name: 'generated' },
+        });
+
+        if (!existingProject) {
+            const projects: CreateProjectDto[] = [
+                {
+                    name: 'generated',
+                    description: 'This is a generated project',
+                    model: 'Agile',
+                    phase: 'Planning',
+                },
+                {
+                    name: 'Test 1',
+                    description: 'This is Test Project 1',
+                    model: 'Waterfall',
+                    phase: 'Execution',
+                },
+                {
+                    name: 'Test 2',
+                    description: 'This is Test Project 2',
+                    model: 'Scrum',
+                    phase: 'Closure',
+                },
+            ];
+
+
+            const createdProjects = await Promise.all(
+                projects.map(project => this.projectsService.createProject(uid as string, project))
+            );
+
+            return { count: createdProjects.length };
+        } else {
+            return { message: "The project 'generated' already exists" };
+        }
     }
 }

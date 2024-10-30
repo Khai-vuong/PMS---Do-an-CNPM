@@ -33,5 +33,8 @@ Task.status deafault = 'Undone'
 Task.due = created_time + 7d
 Thêm Task.comment (Có thể null)
 
-User.mails[] : strings
-Giao việc:
+Add User.mails[] : strings
+Modidy all ids to uuid() but only limited by 6 characters
+
+30/10
+Apply các thay đổi ngày 26. migrate name = change_1
