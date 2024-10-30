@@ -1,6 +1,22 @@
 import "./Projectlist.css";
+import axios from "axios";
+import React, { useEffect, useState} from "react";
+
 
 const Projectlist = () => {
+
+  const[projects, setProjects] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5173/projectlist") 
+      .then((response) => {
+        setProjects(response.data); 
+      })
+      .catch((error) => {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+      });
+  }, []);
+
   return (
     <>
       <div className="container-list">
@@ -18,34 +34,16 @@ const Projectlist = () => {
           </thead>
           <tbody>
             <tr>
-              <td>2211562</td>
-              <td>Vương Quang Khải</td>
-              <td>Team leader / PM</td>
-              <td>cc</td>
+              <td>Adolf</td>
+              <td>Leader</td>
+              <td>xx</td>
+              <td>xx</td>
             </tr>
             <tr>
-              <td>2213316</td>
-              <td>Lê Văn Thoại</td>
-              <td>Frontend dev</td>
-              <td>cc</td>
-            </tr>
-            <tr>
-              <td>2113786</td>
-              <td>Dương Trọng Khôi</td>
-              <td>Frontend dev</td>
-              <td>cc</td>
-            </tr>
-            <tr>
-              <td>2212935</td>
-              <td>Đoàn Ngọc Hoàng Sơn</td>
-              <td>Backend dev</td>
-              <td>cc</td>
-            </tr>
-            <tr>
-              <td>2213772</td>
-              <td>Lê Đức Anh Tuấn</td>
-              <td>Backend dev</td>
-              <td>cc</td>
+              <td>Hitler</td>
+              <td>Member</td>
+              <td>xx</td>
+              <td>xx</td>
             </tr>
           </tbody>
         </table>

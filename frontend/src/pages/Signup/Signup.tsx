@@ -97,7 +97,7 @@ const Signup = () => {
                 required
               />
               <div className="buttons">
-                <input id="Back" type="button" value="Back" />
+                <a id = "back" href="/" className="button">Back</a>
                 <input id="Create" type="submit" value="Create" />
               </div>
             </form>
