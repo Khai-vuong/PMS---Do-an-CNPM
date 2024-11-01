@@ -5,10 +5,12 @@ const CreateProject: React.FC = () => {
   const [projectName, setProjectName] = useState("");
   const [model, setModel] = useState("Waterfall");
   const [description, setDescription] = useState("");
+  const [modelImage, setModelImage] = useState(
+    "/src/pages/Createproject/waterfall.png"
+  ); // Set initial image
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Ngăn chặn hành vi mặc định của form
-    // Handle form submission
+    e.preventDefault();
     console.log({
       projectName,
       model,
@@ -16,12 +18,23 @@ const CreateProject: React.FC = () => {
     });
   };
 
+  const handleModelChange = (selectedModel: string) => {
+    setModel(selectedModel);
+    setModelImage(
+      selectedModel === "Waterfall"
+        ? "/src/pages/Createproject/waterfall.png"
+        : "/src/pages/Createproject/scrum.png"
+    );
+  };
+
   return (
     <div className="create-project-page">
       <header className="header">
         <img src="path/to/logo.png" alt="Logo" className="logo" />
         <div className="user-info">
-          <div className="profile-pic">[User Pic]</div>
+          <div className="profile-pic">
+            <img src="/src/pages/Createproject/image.png" alt="User Pic" />
+          </div>
           <span className="username">Nguyen Van A</span>
         </div>
       </header>
@@ -40,21 +53,21 @@ const CreateProject: React.FC = () => {
         <div className="model-options">
           <button
             type="button"
-            onClick={() => setModel("Waterfall")}
+            onClick={() => handleModelChange("Waterfall")}
             className={model === "Waterfall" ? "active" : ""}
           >
             Waterfall
           </button>
           <button
             type="button"
-            onClick={() => setModel("Scrum")}
+            onClick={() => handleModelChange("Scrum")}
             className={model === "Scrum" ? "active" : ""}
           >
             Scrum
           </button>
         </div>
         <div className="model-illustration">
-          <img src="./Createproject.png" alt="Waterfall Model" />
+          <img src={modelImage} alt={`${model} Model`} />
           <p>{model} Model in Software Engineering</p>
         </div>
         <label>Description</label>
