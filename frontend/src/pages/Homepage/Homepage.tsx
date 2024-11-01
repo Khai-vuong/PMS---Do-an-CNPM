@@ -12,11 +12,6 @@ const Homepage = () => {
   const routeToSignup = () => {
     navigate("auth/signup", { replace: true });
   };
-
-  const routeToCreateProject = () => {
-    navigate("/create-project", { replace: true }); // Đường dẫn đã được chỉnh sửa
-  };
-
   return (
     <>
       <div className="container">
@@ -70,9 +65,6 @@ const Homepage = () => {
               </tr>
             </tbody>
           </table>
-          <button className="create-project-bt" onClick={routeToCreateProject}>
-            Go to Create Project
-          </button>
         </div>
 
         <div className="quote">
