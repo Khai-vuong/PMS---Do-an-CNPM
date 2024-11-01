@@ -1,17 +1,29 @@
 {
   "dependencies": {
+    "@nestjs/core": "^10.4.6",
+    "@nestjs/mapped-types": "^2.0.5",
     "@nestjs/passport": "^10.0.3",
     "@prisma/client": "^5.20.0",
+    "axios": "^1.7.7",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "connect-pg-simple": "^10.0.0",
+    "connect-redis": "^7.1.1",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "9.0.2",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "railway": "^2.0.17",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "redis": "^4.7.0",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@nestjs/common": "^10.4.4",
     "@types/passport-local": "^1.0.38",
-    "@types/react": "^18.3.11"
+    "@types/react": "^18.3.11",
+    "vite": "^5.4.10"
   }
 }

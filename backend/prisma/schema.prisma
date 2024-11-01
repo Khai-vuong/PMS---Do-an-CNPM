@@ -24,8 +24,24 @@ generator client {
 
 // @relation (name: "ManagerProjects", fields: [pid], references: [uid])
 
+model User {
+  uid          String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
+  username     String   @unique
+  password     String
+  google_id    String?
+  email        String
+  mails        String[] @default([])
+  login_method String   @default("LOCAL") // Could be an enum (e.g., "GOOGLE", "LOCAL")
+
+  //Relationships
+  managed_projects Project[] @relation("ManagerProjects")
+  project_ids      Project[] @relation("MemberProjects")
+  files            File[]
+  tasks            Task[] //May not be used
+}
+
 model Project {
-  pid          String   @id @default(uuid())
+  pid          String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   name         String
   description  String
   model        String // This could be an enum depending on your model structure
@@ -39,23 +55,25 @@ model Project {
   members     User[] @relation("MemberProjects")
 }
 
-model User {
-  uid          String  @id @default(uuid())
-  username     String  @unique
-  password     String
-  google_id    String?
-  email        String
-  login_method String  @default("LOCAL") // Could be an enum (e.g., "GOOGLE", "LOCAL")
+model Task {
+  tid          String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
+  name         String
+  description  String
+  status       String   @default("Undone")
+  comment      String?
+  created_time DateTime @default(now())
+  due          DateTime @default(dbgenerated("(now() + interval '7 days')::timestamp"))
 
   //Relationships
-  managed_projects Project[] @relation("ManagerProjects")
-  project_ids      Project[] @relation("MemberProjects")
-  files            File[]
-  tasks            Task[] //May not be used
+  files       File[]
+  project     Project @relation(fields: [project_pid], references: [pid])
+  project_pid String
+  assignee    User    @relation(fields: [assignee_id], references: [uid])
+  assignee_id String
 }
 
 model File {
-  fid           String   @id @default(uuid())
+  fid           String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   name          String
   extention     String
   size          String
@@ -68,22 +86,6 @@ model File {
   task_tid    String
   uploader    User    @relation(fields: [uploader_id], references: [uid])
   uploader_id String
-}
-
-model Task {
-  tid          String   @id @default(uuid())
-  name         String
-  description  String
-  status       String
-  created_time DateTime @default(now())
-  due          DateTime
-
-  //Relationships
-  files       File[]
-  project     Project @relation(fields: [project_pid], references: [pid])
-  project_pid String
-  assignee    User    @relation(fields: [assignee_id], references: [uid])
-  assignee_id String
 }
 
 //What I've learnt
