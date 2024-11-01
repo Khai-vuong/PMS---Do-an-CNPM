@@ -25,6 +25,7 @@ build_FE:
   script:
     - echo 'Building FE'
     - cd frontend
+    - npm install
     - npm run build
 
 
@@ -34,4 +35,5 @@ build_BE:
   script:
     - echo 'Building FE'B
     - cd backend
+    - npm install
     - npm run build
