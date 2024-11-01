@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./CreateTask.css";
 
 const CreateTask: React.FC = () => {
@@ -6,13 +7,40 @@ const CreateTask: React.FC = () => {
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const task = { taskName, description, assignee, dueDate };
-    // Lưu task vào localStorage
-    localStorage.setItem("task", JSON.stringify(task));
-    console.log("Task saved to localStorage:", task);
+    setError(""); // Clear any previous errors
+    setSuccess(""); // Clear any previous success message
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("No token found. Please log in first.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/tasks",
+        {
+          taskName,
+          description,
+          assignee,
+          dueDate,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSuccess("Task created successfully!");
+    } catch (error) {
+      setError("Failed to create task.");
+    }
   };
 
   return (
@@ -29,8 +57,10 @@ const CreateTask: React.FC = () => {
         </div>
       </header>
       <h2>Create Task Page</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
       <form onSubmit={handleSubmit} className="task-form">
-        <label>Task name</label>
+        <label>Task Name</label>
         <input
           type="text"
           value={taskName}
@@ -50,7 +80,7 @@ const CreateTask: React.FC = () => {
           onChange={(e) => setAssignee(e.target.value)}
           placeholder="Enter assignee name"
         />
-        <label>Due date (Optional)</label>
+        <label>Due Date (Optional)</label>
         <input
           type="date"
           value={dueDate}

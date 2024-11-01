@@ -1,38 +1,44 @@
-import React, { useState } from "react";
-import jwt from "jsonwebtoken";
+import { useState } from "react";
+import axios from "axios";
 import "./Createproject.css";
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const [model, setModel] = useState("Waterfall");
   const [description, setDescription] = useState("");
-  const [modelImage, setModelImage] = useState(
-    "/src/pages/Createproject/waterfall.png"
-  );
-  const SECRET_KEY = "your_secret_key";
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleCreateProject = async (e) => {
     e.preventDefault();
-    const projectData = {
-      projectName,
-      model,
-      description,
-    };
+    setError(""); // Clear any previous errors
+    setSuccess(""); // Clear any previous success message
 
-    const token = jwt.sign(projectData, SECRET_KEY);
+    const token = localStorage.getItem("token");
 
-    localStorage.setItem("projectToken", token);
+    if (!token) {
+      setError("No token found. Please log in first.");
+      return;
+    }
 
-    console.log("Project data saved to local storage as JWT:", token);
-  };
-
-  const handleModelChange = (selectedModel) => {
-    setModel(selectedModel);
-    setModelImage(
-      selectedModel === "Waterfall"
-        ? "/src/pages/Createproject/waterfall.png"
-        : "/src/pages/Createproject/scrum.png"
-    );
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/projects",
+        {
+          projectName,
+          model,
+          description,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSuccess("Project created successfully!");
+    } catch (error) {
+      setError("Failed to create project.");
+    }
   };
 
   return (
@@ -40,16 +46,14 @@ const CreateProject = () => {
       <header className="header">
         <img src="path/to/logo.png" alt="Logo" className="logo" />
         <div className="user-info">
-          <div className="profile-pic">
-            <img src="/src/pages/Createproject/image.png" alt="User Pic" />
-          </div>
+          <div className="profile-pic">[User Pic]</div>
           <span className="username">Nguyen Van A</span>
         </div>
       </header>
-
       <h2>Create Project Page</h2>
-
-      <form onSubmit={handleSubmit} className="project-form">
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
+      <form onSubmit={handleCreateProject} className="project-form">
         <label>Project Name</label>
         <input
           type="text"
@@ -61,21 +65,21 @@ const CreateProject = () => {
         <div className="model-options">
           <button
             type="button"
-            onClick={() => handleModelChange("Waterfall")}
+            onClick={() => setModel("Waterfall")}
             className={model === "Waterfall" ? "active" : ""}
           >
             Waterfall
           </button>
           <button
             type="button"
-            onClick={() => handleModelChange("Scrum")}
+            onClick={() => setModel("Scrum")}
             className={model === "Scrum" ? "active" : ""}
           >
             Scrum
           </button>
         </div>
         <div className="model-illustration">
-          <img src={modelImage} alt={`${model} Model`} />
+          <img src="./Createproject.png" alt="Waterfall Model" />
           <p>{model} Model in Software Engineering</p>
         </div>
         <label>Description</label>
