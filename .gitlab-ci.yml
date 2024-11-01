@@ -14,13 +14,24 @@ test_BE:
   stage: test
   image: node:21
   script:
+    - echo "Running tests..."
     - cd backend
     - npm install
     - npm test || echo "no backend test found"
 
-
-build_job:
+build_FE:
   stage: build
+  image: node:21
   script:
-    - echo "Building the project..."
+    - echo 'Building FE'
+    - cd frontend
+    - npm run build
+
+
+build_BE:
+  stage: build
+  image: node:21
+  script:
+    - echo 'Building FE'B
+    - cd backend
     - npm run build
