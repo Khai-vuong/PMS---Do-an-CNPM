@@ -23,11 +23,11 @@ const CreateTask: React.FC = () => {
         <img src="path/to/logo.png" alt="Logo" className="logo" />
         <div className="user-info">
           <img
-            src="path/to/profile-pic.jpg"
+            src="/src/pages/Createproject/image.png"
             alt="User"
             className="profile-pic"
           />
-          <span className="username">user</span>
+          <span className="username">Nguyen Van A</span>
         </div>
       </header>
 
