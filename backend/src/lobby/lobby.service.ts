@@ -1,11 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { PageParamDTO } from './dtos/page.dto';
+import { PageDTO, TaskReturnDTO } from './dtos/page.dto';
+
 
 @Injectable()
 export class LobbyService {
     constructor(private prisma : PrismaService) {}
-    async getTasks(pid: string, PageParamDTO: PageParamDTO){
+    async getUserName(uid: string): Promise<string>{
+        const user = await this.prisma.user.findUnique({
+            where: { uid: uid }
+        });
+        if (!user) {
+            throw new NotFoundException("User not found");
+        }
+        return user.username;
+    }
+    async getTasks(pid: string, page: string, pageSize: string) {
         const project = await this.prisma.project.findUnique({
             where: { pid: pid },
             include: { tasks: true }
@@ -16,19 +26,19 @@ export class LobbyService {
         if (!project.tasks.length) {
             throw new NotFoundException("No task found");
         }
-        return this.Pagination(project.tasks, PageParamDTO);
+        return this.Pagination(project.tasks, page, pageSize);
     }
-    async Pagination(tasks: any[], PageParamDTO: PageParamDTO){
-        const page = PageParamDTO.currentPage;
-        const perPage = PageParamDTO.pageSize;
-        const start = (page - 1) * perPage;
-        const end = start + perPage - 1;
+    async Pagination(tasks: any[], page: string, pageSize: string) {
+        const perPage = parseInt(pageSize);
+        const pagenum = parseInt(page);
+        const start = (pagenum - 1) * perPage;
+        const end = start + perPage;
         let data = [];
         if (start > tasks.length - 1) {
             throw new NotFoundException("Invalid page number");
         }
         if (end > tasks.length) {
-            data = tasks.slice(start, tasks.length - 1);
+            data = tasks.slice(start, tasks.length);
         }
         else {
             data = tasks.slice(start, end);
@@ -36,6 +46,19 @@ export class LobbyService {
         if (data.length === 0) {
             throw new NotFoundException("No task found in this page");
         }
-        return data;
+        const taskReturnData = await Promise.all(data.map(async (task) => {
+            const assigneeUsername = await this.getUserName(task.assignee_id);
+            return new TaskReturnDTO(task.name, task.description, assigneeUsername);
+          }));
+        const pageCount = Math.ceil(tasks.length / perPage);
+        const pageMeta = {
+            pageCount: pageCount,
+            pageSize: perPage,
+            currentPage: pagenum,
+            hasPreviousPage: pagenum > 1,
+            hasNextPage: pagenum < pageCount
+        };
+        const returnData = new PageDTO<TaskReturnDTO>(taskReturnData, pageMeta);
+        return returnData;
     }
 }
