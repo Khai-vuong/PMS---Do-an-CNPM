@@ -1,11 +1,9 @@
 import "./Projectlist.css";
 import axios from "axios";
 import React, { useEffect, useState} from "react";
-
-
+import {ProjectsListDto} from "../../../DTOs/project-list.dto"
 const Projectlist = () => {
-
-  const[projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<ProjectsListDto[]>([]);
   useEffect(() => {
     axios
       .get("http://localhost:5173/projectlist") 
@@ -16,6 +14,21 @@ const Projectlist = () => {
         console.error("Lỗi khi lấy dữ liệu:", error);
       });
   }, []);
+
+    const handleProjectClick = (id: number | undefined) => {
+    if (id !== undefined) {
+      axios
+        .get(`http://localhost:5173/project/${id}`)
+        .then((response) => {
+          console.log("Project details:", response.data);
+        })
+        .catch((error) => {
+          console.error("Lỗi khi lấy thông tin dự án:", error);
+        });
+    }
+  };
+
+  
 
   return (
     <>
@@ -33,18 +46,22 @@ const Projectlist = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Adolf</td>
-              <td>Leader</td>
-              <td>xx</td>
-              <td>xx</td>
-            </tr>
-            <tr>
-              <td>Hitler</td>
-              <td>Member</td>
-              <td>xx</td>
-              <td>xx</td>
-            </tr>
+            {projects.length === 0 ? (
+              <tr>
+                <td colSpan={4} style={{ textAlign: 'center' }}>
+                  Không có dự án nào
+                </td>
+              </tr>
+            ) : (
+              projects.map((project) => (
+                <tr key={project.id} onClick={() => handleProjectClick(project.id)}>
+                  <td>{project.name}</td>
+                  <td>{project.role}</td>
+                  <td>{project.model}</td>
+                  <td>{project.phase}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 

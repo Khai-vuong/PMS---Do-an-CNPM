@@ -23,6 +23,8 @@ table {
     border-collapse: collapse;
     max-width: 800px;
     margin: 10px auto;
+    border-radius: 10px; /* Adds a 10px radius to the table corners */
+    overflow: hidden; 
 }
 table thead {
     color: rgb(255, 255, 255);
@@ -33,10 +35,19 @@ table td {
     border: 1px solid #ddd;
     text-align: center;
     background-color: rgb(255, 255, 255);
+    border: none;
 }
 
 table th {
     background-color: #000000;
+}
+table th:first-child, td:first-child, /* Name column */
+table th:nth-child(2),td:nth-child(2) { /* Position column */
+  text-align: left;
+}
+table th:nth-child(3),td:nth-child(3), /* Model column */
+table th:nth-child(4),td:nth-child(4) { /* Phase column */
+  text-align: right;
 }
 
 .create-button a {
