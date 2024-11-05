@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put, Query } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from 'DTOs/create-task.dto';
-import { UpdateTaskDto } from 'DTOs/update-task.dto';
 import { LocalGuard } from 'src/utils/local.guard';
 import { GetUserID } from 'src/utils/get-user.decorator';
 
@@ -11,8 +10,8 @@ export class TasksController {
 
   @UseGuards(LocalGuard)
   @Post('new')
-  async create(@Query('pid') pid: string, @Body() createTaskDto: CreateTaskDto, @GetUserID() user: any) {
-    return this.tasksService.create(pid, createTaskDto, user.userID);
+  async create(@Query('pid') pid: string, @Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create(pid, createTaskDto);
   }
 
   @UseGuards(LocalGuard)

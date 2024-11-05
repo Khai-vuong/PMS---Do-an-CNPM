@@ -1,13 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from 'DTOs/create-task.dto';
-import { UpdateTaskDto } from 'DTOs/update-task.dto';
 import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class TasksService {
     constructor(private prisma: PrismaService) { }
 
-    async create(pid: string, createTaskDto: CreateTaskDto, userID: string) {
+    async create(pid: string, createTaskDto: CreateTaskDto) {
         const { assignee_id, ...otherData } = createTaskDto;
 
         const [existingProject, existingUser] = await Promise.all([
@@ -23,10 +22,6 @@ export class TasksService {
 
         if (!existingProject) {
             throw new HttpException(`Project with pid ${pid} not found`, HttpStatus.NOT_FOUND);
-        }
-
-        if (!existingProject.manager_ids.some(manager => manager.uid === userID)) {
-            throw new HttpException(`You are not the manager of this project. You can't create a new task`, HttpStatus.FORBIDDEN);
         }
 
         if (!existingUser) {
@@ -55,7 +50,7 @@ export class TasksService {
         if (existingTask.assignee_id !== userID) {
             throw new HttpException(`You are not the assignee of this task. You can't create a merge request`, HttpStatus.FORBIDDEN);
         }
-        return { tid, name: existingTask.name };
+        return { tid, taskName: existingTask.name };
     }
 
     async createMergeRequestPost(tid: string, comment: string, userID: string) {
