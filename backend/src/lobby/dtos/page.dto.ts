@@ -1,7 +1,5 @@
 // page.dto.ts
-
-import { Optional } from "@nestjs/common";
-import { IS_BOOLEAN, IsArray, IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
 
 
