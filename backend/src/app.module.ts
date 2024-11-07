@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
 import { TestModule } from './test/test.module';
 import { LobbyModule } from './lobby/lobby.module';
+import { TasksModule } from './tasks/tasks.module';
 
 
 @Module({
@@ -12,7 +13,8 @@ import { LobbyModule } from './lobby/lobby.module';
     AuthModule,
     ProjectsModule,
     TestModule,
-    LobbyModule
+    LobbyModule,
+    TasksModule
   ],
   controllers: [AppController],
   providers: [AppService],
