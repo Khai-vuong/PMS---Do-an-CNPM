@@ -16,8 +16,4 @@ export class CreateTaskDto {
 
     @IsDate()
     due: Date;
-
-    @IsString()
-    @IsOptional()
-    assignee_id?: string;
 }

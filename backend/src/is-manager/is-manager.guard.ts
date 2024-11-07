@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { BadRequestException, CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'prisma/prisma.service';
 // import { Observable } from 'rxjs';
@@ -6,11 +6,11 @@ import { PrismaService } from 'prisma/prisma.service';
 @Injectable()
 export class IsManagerGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService, private readonly prisma: PrismaService) {
-    
+
   }
   async canActivate(
     context: ExecutionContext,
-  ):  Promise<boolean> {
+  ): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const authorization = request.headers.authorization; //Get Bearer token
     const token = authorization?.split(' ')[1]; //Get token
@@ -23,19 +23,21 @@ export class IsManagerGuard implements CanActivate {
         userID: payload.sub,
         username: payload.username
       }
-      const project = await this.prisma.project.findUnique({ 
+
+      const project = await this.prisma.project.findUnique({
         where: { pid: request.query.pid },
         include: { manager_ids: true },
       });
-      const Mlist =  project.manager_ids
-      Mlist.forEach(element => {
-        if (element.uid === request.user.userID) {
-          return true;
-        }
-      }
-      );
+
+      if (!project) { throw new BadRequestException('Cannot find this project'); }
+      const Mlist = project.manager_ids
+
+      const isManager = Mlist.some((manager) => manager.uid === request.user.userID);
+      return isManager;
+
     } catch (error) {
-      return false;
+      console.error('Authorization error:', error);
+      throw new UnauthorizedException('You are not the manager of this project');
+    }
   }
-}
 }
