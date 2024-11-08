@@ -32,16 +32,31 @@ const Signup = () => {
         password: pwd,
       });
       console.log(response.data);
-    }
-    catch (error) {
+    } catch (error) {
       if (axios.isAxiosError(error)) {
-        setErrMsg(error.response?.data?.message || "Registration failed");
-      } else {
-        setErrMsg("Registration failed");
+        if (error.response) {
+          const status = error.response?.status;
+          const message =
+            error.response?.data?.message || "Registration failed";
+
+          if (status === 400) {
+            setErrMsg("Missing Username or Password: " + message);
+          } else if (status === 401) {
+            setErrMsg("Unauthorized: " + message);
+          } else {
+            setErrMsg("Registration failed: " + message);
+          }
+          alert(errMsg);
+        } else if (error.request) {
+          setErrMsg("No response from the server. Please try again later.");
+          alert(errMsg);
+        } else {
+          setErrMsg("Error in setting up the request: " + error.message);
+          alert(errMsg);
+        }
       }
       errRef.current?.focus();
-    }
-    finally {
+    } finally {
       setSuccess(true);
       setUser("");
       setPwd("");
@@ -51,38 +66,42 @@ const Signup = () => {
   return (
     <>
       {success ? (
-        <div className="success">
-          <h1>Sign up succesfull</h1>
-          <div className="gohome">
-            <a href="/">Go to home</a>
+        <div className="wrapper">
+          <div className="success">
+            <h1>Sign up succesfull</h1>
+            <div className="gohome">
+              <a href="/">Go to home</a>
+            </div>
           </div>
         </div>
       ) : (
-        <div className="container">
-          <div className="create">Create your account</div>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              autoComplete="off"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
-              required
-            />
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              onChange={(e) => setPwd(e.target.value)}
-              value={pwd}
-              required
-            />
-            <div className="buttons">
-              <input id="Back" type="button" value="Back" />
-              <input id="Create" type="submit" value="Create" />
-            </div>
-          </form>
+        <div className="wrapper">
+          <div className="table">
+            <div className="create">Create your account</div>
+            <form onSubmit={handleSubmit}>
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                autoComplete="off"
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
+                required
+              />
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                onChange={(e) => setPwd(e.target.value)}
+                value={pwd}
+                required
+              />
+              <div className="buttons">
+                <a id = "back" href="/" className="button">Back</a>
+                <input id="Create" type="submit" value="Create" />
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </>

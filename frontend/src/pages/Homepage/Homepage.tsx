@@ -15,7 +15,7 @@ const Homepage = () => {
 
   return (
     <>
-      <div className="container">
+      <div className="container-homepage">
         <div className="header">
           <img src="" alt="ICON" />
           <div className="buttons">
@@ -23,7 +23,7 @@ const Homepage = () => {
               Login
             </button>
             <button className="signup-bt" onClick={routeToSignup}>
-              Sign Up
+              Signup
             </button>
           </div>
         </div>
