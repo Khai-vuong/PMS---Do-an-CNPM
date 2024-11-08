@@ -16,9 +16,14 @@ function App() {
           <Route path="/" element={<Homepage />}></Route>
           <Route path="/auth/signup" element={<Signup />}></Route>
           <Route path="/auth/login" element={<Login />}></Route>
+<<<<<<< HEAD
           <Route path="/project/create" element={<Createproject />}></Route>
           <Route path="/task/create" element={<Createtask />}></Route>
           <Route path="/merge/create" element={<Createmerge />}></Route>
+=======
+          <Route path="/projects/create" element={<Createproject />}></Route>
+          <Route path="/task/create" element={<Createtask />}></Route>
+>>>>>>> 306c78d356f0d1d6fcc2013cb9cffbf080a3ed68
         </Routes>
       </Router>
     </>
