@@ -77,9 +77,9 @@ export class ProjectsService {
         });
 
         const projectsInfo: ProjectsListDto[] = listProjects.map(project => {
-            const { name, model, phase, manager_ids } = project;
+            const { name, model, phase, manager_ids, pid } = project;
             const role = manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : 'Member';
-            return { name, model, phase, role };
+            return { name, model, phase, role, pid };
         });
 
         return projectsInfo;
@@ -100,6 +100,7 @@ export class ProjectsService {
             model: existingProject.model,
             phase: existingProject.phase,
             role: existingProject.manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : 'Member',
+            pid: existingProject.pid,
         };
 
         return projectInfo;

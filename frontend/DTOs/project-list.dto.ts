@@ -1,6 +1,6 @@
 
 export class ProjectsListDto {
-    id?: number;
+    pid?: string;
 
     name?: string;
 
@@ -9,5 +9,5 @@ export class ProjectsListDto {
     phase?: string;
 
     role?: 'Project manager' | 'Member';
-    
+
 }

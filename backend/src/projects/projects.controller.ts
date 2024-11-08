@@ -10,6 +10,18 @@ export class ProjectsController {
     constructor(private readonly projectsService: ProjectsService) { }
 
     @UseGuards(LocalGuard)
+    @Get('list')
+    async listProjects(@GetUserID() user: any) {
+        return this.projectsService.listProjects(user.userID);
+    }
+
+    @UseGuards(LocalGuard)
+    @Get(':pid')
+    async getProject(@GetUserID() user: any, @Param('pid') pid: string) {
+        return this.projectsService.getProject(user.userID, pid);
+    }
+
+    @UseGuards(LocalGuard)
     @Post('create')
     async createProject(
         @GetUserID() user: any,
@@ -42,17 +54,5 @@ export class ProjectsController {
     @Delete(':pid')
     async deleteProject(@GetUserID() user: any, @Param('pid') pid: string) {
         return this.projectsService.deleteProject(user.userID, pid);
-    }
-
-    @UseGuards(LocalGuard)
-    @Get('list')
-    async listProjects(@GetUserID() user: any) {
-        return this.projectsService.listProjects(user.userID);
-    }
-
-    @UseGuards(LocalGuard)
-    @Get(':pid')
-    async getProject(@GetUserID() user: any, @Param('pid') pid: string) {
-        return this.projectsService.getProject(user.userID, pid);
     }
 }

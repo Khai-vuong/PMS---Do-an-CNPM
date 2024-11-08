@@ -12,4 +12,7 @@ export class ProjectsListDto {
 
     @IsString()
     role: 'Project manager' | 'Member';
+
+    @IsString()
+    pid: string;
 }

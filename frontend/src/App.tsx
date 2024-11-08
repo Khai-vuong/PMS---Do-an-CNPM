@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login.tsx";
 import Projectlist from "./pages/Projectlist/Projectlist.tsx";
 import Createproject from "./pages/Createproject/Createproject.tsx";
 import Createtask from "./pages/Createtask/Createtask.tsx";
+import Wilderness from "./pages/Wilderness/Wilderness.tsx";
 
 function App() {
   return (
@@ -16,9 +17,12 @@ function App() {
           <Route path="/" element={<Homepage />}></Route>
           <Route path="/auth/signup" element={<Signup />}></Route>
           <Route path="/auth/login" element={<Login />}></Route>
-          <Route path="/projectlist" element={<Projectlist />}></Route>
+          <Route path="/projects/list" element={<Projectlist />}></Route>
           <Route path="/projects/create" element={<Createproject />}></Route>
           <Route path="/task/create" element={<Createtask />}></Route>
+          <Route path="/task/create" element={<Wilderness />}></Route>
+          <Route path="*" element={<Wilderness />}></Route>
+
         </Routes>
       </Router>
     </>

@@ -1,34 +1,64 @@
 import "./Projectlist.css";
 import axios from "axios";
-import React, { useEffect, useState} from "react";
-import {ProjectsListDto} from "../../../DTOs/project-list.dto"
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ProjectsListDto } from "../../../DTOs/project-list.dto"
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const Projectlist = () => {
   const [projects, setProjects] = useState<ProjectsListDto[]>([]);
+
+  const navigate = useNavigate();
+
+  const toLobby = (pid: string): void => {
+    navigate(`/lobby/init/?pid=${pid}`);
+  }
+
   useEffect(() => {
     axios
-      .get("http://localhost:5173/projectlist") 
+      .get("http://localhost:4000/projects/list")
       .then((response) => {
-        setProjects(response.data); 
+        setProjects(response.data);
       })
       .catch((error) => {
         console.error("Lỗi khi lấy dữ liệu:", error);
       });
   }, []);
 
-    const handleProjectClick = (id: number | undefined) => {
+  // const handleProjectClick = (id: string | undefined) => {
+  //   if (id !== undefined) {
+  //     console.log("Project ID:", id);
+  //     axios
+  //       .get(`http://localhost:4000/projects/:${id}`)
+  //       .then((response) => {
+  //         console.log("Project details:", response.data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Lỗi khi lấy thông tin dự án:", error);
+  //       });
+  //   }
+  // };
+
+  const handleProjectClick = (id: string | undefined) => {
     if (id !== undefined) {
-      axios
-        .get(`http://localhost:5173/project/${id}`)
-        .then((response) => {
-          console.log("Project details:", response.data);
-        })
-        .catch((error) => {
-          console.error("Lỗi khi lấy thông tin dự án:", error);
-        });
+      console.log("Project ID:", id);
+      toLobby(id);
     }
   };
 
-  
+
 
   return (
     <>
@@ -54,7 +84,7 @@ const Projectlist = () => {
               </tr>
             ) : (
               projects.map((project) => (
-                <tr key={project.id} onClick={() => handleProjectClick(project.id)}>
+                <tr key={project.pid} onClick={() => handleProjectClick(project.pid)}>
                   <td>{project.name}</td>
                   <td>{project.role}</td>
                   <td>{project.model}</td>
