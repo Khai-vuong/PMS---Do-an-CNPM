@@ -16,19 +16,19 @@ const Homepage = () => {
   return (
     <>
       <div className="container-homepage">
-        <div className="header">
+        <div className="header-homepage">
           <img src="" alt="ICON" />
           <div className="buttons">
             <button className="login-bt" onClick={routeToLogin}>
               Login
             </button>
             <button className="signup-bt" onClick={routeToSignup}>
-              Signup
+              Sign Up
             </button>
           </div>
         </div>
 
-        <div className="body">
+        <div className="body-homepage">
           <h1 className="title">Project Management System</h1>
           <table>
             <thead>
@@ -77,3 +77,5 @@ const Homepage = () => {
 };
 
 export default Homepage;
+
+
