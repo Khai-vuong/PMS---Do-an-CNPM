@@ -7,14 +7,40 @@ const CreateTask: React.FC = () => {
   const [assignee, setAssignee] = useState("");
   const [dueDate, setDueDate] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
+
+    const token = "";
+    const url = "";
+
+    const taskData = {
       taskName,
       description,
       assignee,
       dueDate,
-    });
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(taskData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Task created successfully:", data);
+      alert("Task created successfully!");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while creating the task.");
+    }
   };
 
   return (

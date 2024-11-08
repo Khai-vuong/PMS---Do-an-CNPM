@@ -7,15 +7,40 @@ const CreateProject: React.FC = () => {
   const [description, setDescription] = useState("");
   const [modelImage, setModelImage] = useState(
     "/src/pages/Createproject/waterfall.png"
-  ); // Set initial image
+  );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
+
+    const token = ""; 
+    const url = ""; 
+
+    const projectData = {
       projectName,
       model,
       description,
-    });
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(projectData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Project created successfully:", data);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while creating the project.");
+    }
   };
 
   const handleModelChange = (selectedModel: string) => {
