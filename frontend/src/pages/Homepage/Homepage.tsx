@@ -1,4 +1,4 @@
-//Homepage version made by V.Q.Khai
+// Homepage version made by V.Q.Khai
 import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 
@@ -12,7 +12,6 @@ const Homepage = () => {
   const routeToSignup = () => {
     navigate("auth/signup", { replace: true });
   };
-
   return (
     <>
       <div className="container-homepage">

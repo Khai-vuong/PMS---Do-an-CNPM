@@ -11,9 +11,9 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:4000/auth/login", {
+      const response = await axios.post("http://localhost:5174/auth/login", {
         username: username,
-        password: password
+        password: password,
       });
 
       console.log("Login successful:", response.data);
