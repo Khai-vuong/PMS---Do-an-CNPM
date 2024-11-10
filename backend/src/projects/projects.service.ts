@@ -78,10 +78,10 @@ export class ProjectsService {
         });
 
         const projectsInfo: ProjectsListDto[] = listProjects.map(project => {
-            const { name, model, phase, manager_ids } = project;
+            const { name, model, phase, manager_ids, pid } = project;
             const role = manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : (manager_ids.some(members => members.uid === userID) ? 'Member' : null);
 
-            return role ? { name, model, phase, role } as ProjectsListDto : null;
+            return role ? { name, model, phase, role, pid } as ProjectsListDto : null;
         }).filter((project): project is ProjectsListDto => project !== null);
 
         return projectsInfo;

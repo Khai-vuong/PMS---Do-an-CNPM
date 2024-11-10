@@ -21,9 +21,9 @@ function App() {
           <Route path="/projects/list" element={<Projectlist />}></Route>
           <Route path="/projects/create" element={<Createproject />}></Route>
           <Route path="/task/create" element={<Createtask />}></Route>
+          <Route path="/tasks/create-mr" element={<Createmerge />}></Route>
           <Route path="*" element={<Wilderness />}></Route>
 
-          <Route path="/merge/create" element={<Createmerge />}></Route>
         </Routes>
       </Router>
     </>
