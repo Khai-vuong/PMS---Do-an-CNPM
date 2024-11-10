@@ -1,5 +1,7 @@
-import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { TestService } from './test.service';
+import { GetUserID } from 'src/utils/get-user.decorator';
+import { LocalGuard } from 'src/utils/local.guard';
 
 @Controller('test')
 export class TestController {
@@ -26,5 +28,12 @@ export class TestController {
     @Get('projects')
     async generateProjects(@Query('uid') uid: string) {
         return this.testService.generateProjects(uid);
+    }
+
+    @UseGuards(LocalGuard)
+    @Get('getuser')
+    async getUser(@GetUserID() uid: any) {
+        console.log(uid)
+        return uid;
     }
 }

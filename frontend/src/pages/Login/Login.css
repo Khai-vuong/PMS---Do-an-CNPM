@@ -4,7 +4,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: #007bff;
+  background-color: #3f88d6;
 }
 
 .login-container {
@@ -39,7 +39,7 @@ body {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: white;
+  background-color: rgb(108, 123, 167);
   color: #333;
 }
 

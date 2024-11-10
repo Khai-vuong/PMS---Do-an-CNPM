@@ -1,4 +1,4 @@
-.container {
+.container-homepage {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -7,7 +7,7 @@
   background-color: #0056b3;
 }
 
-.header {
+.header-homepage {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,11 +20,11 @@
   right: 0;
 }
 
-.header img {
+.header-homepage img {
   height: 50px;
 }
 
-.header .buttons {
+.header-homepage .buttons {
   display: flex;
   justify-content: flex-end;
   align-items: right;
@@ -33,23 +33,23 @@
   margin: 0;
 }
 
-.header .buttons button {
+.header-homepage .buttons button {
   width: 120px;
   height: 50px;
   font-size: 0.75rem;
   padding: 5px 10px;
   color: rgb(3, 3, 3);
-  background-color: #007bff;
+  background-color: #b6bec9;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.header .buttons button:hover {
+.header-homepage .buttons button:hover {
   background-color: #0056b3;
 }
 
-.body {
+.body-homepage {
   margin: 20px auto;
   padding: 20px;
   width: 80%;
@@ -68,27 +68,28 @@
   text-align: center;
 }
 
-.body table {
+.body-homepage table {
   width: 100%;
   border-collapse: collapse;
   max-width: 800px;
   margin: 0 auto;
 }
 
-.body table th,
-.body table td {
+.body-homepage table th,
+.body-homepage table td {
   padding: 12px;
-  border: 1px solid #0f0f0f;
+  border: 2px solid #0f0f0f;
   text-align: center;
   color: black;
 }
 
-.body table th {
+.body-homepage table th {
   background-color: #add8e6;
   color: black;
 }
 
 .quote {
+  align-self: center;
   text-align: center;
   margin: 20px 0;
   font-size: 1.2rem;
@@ -97,6 +98,24 @@
   color: #030303;
 }
 
-.body .title {
+.body-homepage .title {
   color: black;
+}
+.create-project-bt {
+  width: 200px; /* Kích thước nút nhỏ hơn */
+  height: 80px; /* Chiều cao nút nhỏ hơn */
+  margin-top: 20px; /* Khoảng cách giữa bảng và nút */
+  font-size: 0.9rem; /* Giảm kích thước font */
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block; /* Đảm bảo nút là khối để căn giữa */
+  margin-left: auto;
+  margin-right: auto; /* Căn giữa nút */
+}
+
+.create-project-bt:hover {
+  background-color: #0056b3;
 }

@@ -19,9 +19,10 @@
     height: 200px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     border-radius: 10px;
-    background-color: rgba(23, 196, 153);
+    background-color: #0056b3;
     color: white;
     font-family: 'Brush Script MT', cursive;
 }
@@ -33,7 +34,22 @@
     color: rgb(255, 255, 255);
 }
 
-.container {
+.wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    background-image: url(./logoo.jpg);
+
+
+}
+
+.table {
     width: 500px;
     height: 400px;
     display: flex;
@@ -41,7 +57,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    background-color: rgba(65, 62, 62, 0.7);
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(2px);
 }
 
 .create {
@@ -49,7 +66,7 @@
     font-weight: bold;
     display: flex;
     justify-content: center;
-    color: rgb(103, 218, 189);
+    color: #0056b3;
 }
 
 form {
@@ -62,7 +79,7 @@ form label {
     display: flex;
     margin-top: 10px;
     font-size: 18px;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 form input {
@@ -71,35 +88,46 @@ form input {
     padding: 10px;
     border-radius: 6px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 12px;
 }
 
-input[type="button"],
+#back,
 input[type="submit"] {
     appearance: none;
     width: 30%;
     margin-top: 35px;
     border: none;
     display: flex;
+    justify-content: center;
+    /* Để căn giữa nội dung */
     align-items: center;
-    background-color: #49c1a2;
+    background-color: #0056b3;
     color: white;
     font-size: 17px;
     cursor: pointer;
     transition: opacity 0.1s;
+    text-decoration: none;
+    /* Bỏ gạch chân mặc định của thẻ <a> */
+    padding: 10px;
+    /* Tạo khoảng cách giống nhau */
+    border-radius: 6px;
+    /* Đảm bảo cả hai cùng bo góc */
+    box-sizing: border-box;
+    /* Đảm bảo padding được tính vào kích thước */
 }
 
-input[type="button"]:active,
+#back:active,
 input[type="submit"]:active {
     opacity: 0.7;
 }
 
-input[type="button"]:hover,
+#back:hover,
 input[type="submit"]:hover {
-    background-color: #37917a;
+    background-color: #0056b3;
     border-radius: 5px;
     font-size: 20px;
 }
+
 
 .buttons {
     width: 90%;

@@ -102,6 +102,7 @@ export class ProjectsService {
             model: existingProject.model,
             phase: existingProject.phase,
             role: existingProject.manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : 'Member',
+            pid: existingProject.pid,
         };
 
         return projectInfo;

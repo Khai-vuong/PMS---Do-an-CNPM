@@ -10,8 +10,10 @@ export class TasksController {
 
   @UseGuards(LocalGuard)
   @Post('new')
-  async create(@Query('pid') pid: string, @Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(pid, createTaskDto);
+  async create(@Query('pid') pid: string,
+    @Body() createTaskDto: CreateTaskDto,
+    @GetUserID() user: any) {
+    return this.tasksService.create(pid, createTaskDto, user.userID);
   }
 
   @UseGuards(LocalGuard)

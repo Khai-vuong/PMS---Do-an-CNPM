@@ -1,4 +1,4 @@
-//Homepage version made by V.Q.Khai
+// Homepage version made by V.Q.Khai
 import { useNavigate } from "react-router-dom";
 import "./Homepage.css";
 
@@ -12,11 +12,10 @@ const Homepage = () => {
   const routeToSignup = () => {
     navigate("auth/signup", { replace: true });
   };
-
   return (
     <>
-      <div className="container">
-        <div className="header">
+      <div className="container-homepage">
+        <div className="header-homepage">
           <img src="" alt="ICON" />
           <div className="buttons">
             <button className="login-bt" onClick={routeToLogin}>
@@ -28,7 +27,7 @@ const Homepage = () => {
           </div>
         </div>
 
-        <div className="body">
+        <div className="body-homepage">
           <h1 className="title">Project Management System</h1>
           <table>
             <thead>
@@ -77,3 +76,5 @@ const Homepage = () => {
 };
 
 export default Homepage;
+
+

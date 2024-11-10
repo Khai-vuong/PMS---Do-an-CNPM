@@ -6,8 +6,8 @@ import { PrismaService } from 'prisma/prisma.service';
 export class TasksService {
     constructor(private prisma: PrismaService) { }
 
-    async create(pid: string, createTaskDto: CreateTaskDto) {
-        const { assignee_id, ...otherData } = createTaskDto;
+    async create(pid: string, createTaskDto: CreateTaskDto, assignee_id: string) {
+        const { ...otherData } = createTaskDto;
 
         const [existingProject, existingUser] = await Promise.all([
             this.prisma.project.findUnique({
