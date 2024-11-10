@@ -11,5 +11,5 @@ export class ProjectsListDto {
     phase: string;
 
     @IsString()
-    role: 'Project manager' | 'Member';
+    role?: 'Project manager' | 'Member';
 }
