@@ -72,15 +72,17 @@ export class ProjectsService {
     async listProjects(userID: string) {
         const listProjects = await this.prisma.project.findMany({
             include: {
-                manager_ids: true
+                manager_ids: true,
+                members: true,
             },
         });
 
         const projectsInfo: ProjectsListDto[] = listProjects.map(project => {
-            const { name, model, phase, manager_ids, pid } = project;
-            const role = manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : 'Member';
-            return { name, model, phase, role, pid };
-        });
+            const { name, model, phase, manager_ids } = project;
+            const role = manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : (manager_ids.some(members => members.uid === userID) ? 'Member' : null);
+
+            return role ? { name, model, phase, role } as ProjectsListDto : null;
+        }).filter((project): project is ProjectsListDto => project !== null);
 
         return projectsInfo;
     }
