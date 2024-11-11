@@ -6,6 +6,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { TestModule } from './test/test.module';
 import { LobbyModule } from './lobby/lobby.module';
 import { TasksModule } from './tasks/tasks.module';
+import { FileModule } from './file/file.module';
 
 
 @Module({
@@ -14,7 +15,8 @@ import { TasksModule } from './tasks/tasks.module';
     ProjectsModule,
     TestModule,
     LobbyModule,
-    TasksModule
+    TasksModule,
+    FileModule
   ],
   controllers: [AppController],
   providers: [AppService],
