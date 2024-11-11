@@ -85,11 +85,11 @@ model MergeRequest {
 
   // Relationships
   files        File[]
-  sender       User   @relation("Sender", fields: [sender_uid], references: [uid])
+  sender       User    @relation("Sender", fields: [sender_uid], references: [uid])
   sender_uid   String
-  approver     User   @relation("Approver", fields: [approver_uid], references: [uid])
-  approver_uid String
-  task         Task   @relation(fields: [tid], references: [tid])
+  approver     User?   @relation("Approver", fields: [approver_uid], references: [uid])
+  approver_uid String?
+  task         Task    @relation(fields: [tid], references: [tid])
   tid          String
   mails        Mail[]
 }
