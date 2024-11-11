@@ -1,18 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -22,35 +7,33 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// @relation (name: "ManagerProjects", fields: [pid], references: [uid])
-
 model User {
-  uid          String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
-  username     String   @unique
+  uid          String  @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
+  username     String  @unique
   password     String
   google_id    String?
   email        String
-  mails        String[] @default([])
-  login_method String   @default("LOCAL") // Could be an enum (e.g., "GOOGLE", "LOCAL")
+  login_method String  @default("LOCAL") // "GOOGLE" or "LOCAL"
 
-  //Relationships
+  // Relationships
   managed_projects Project[]      @relation("ManagerProjects")
   project_ids      Project[]      @relation("MemberProjects")
   files            File[]
-  tasks            Task[] //May not be used
-  MergeRequest     MergeRequest[]
-  MergeRequest     MergeRequest[]
+  tasks            Task[] // May not be used
+  sent_MRs         MergeRequest[] @relation("Sender") // sent merge requests
+  approved_MRs     MergeRequest[] @relation("Approver") // approved merge requests
+  mails            Mail[] // Mails received by the user
 }
 
 model Project {
   pid          String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   name         String
   description  String
-  model        String // This could be an enum depending on your model structure
+  model        String //Enum: Waterfall, Scrum
   phase        String
   created_time DateTime @default(now())
 
-  //Relationships
+  // Relationships
   tasks       Task[]
   files       File[]
   manager_ids User[] @relation("ManagerProjects")
@@ -61,68 +44,65 @@ model Task {
   tid          String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   name         String
   description  String
-  status       String   @default("Undone") //Enum: Undone, Pending, Accepted, Rejected
+  status       String   @default("Undone") //Enum: "Undone", "Done". Others are added in MRs
   comment      String?
   created_time DateTime @default(now())
   due          DateTime @default(dbgenerated("(now() + interval '7 days')::timestamp"))
 
-  //Relationships
-  files        File[]
-  project      Project        @relation(fields: [project_pid], references: [pid])
-  project_pid  String
-  assignee     User           @relation(fields: [assignee_id], references: [uid])
-  assignee_id  String
-  MergeRequest MergeRequest[]
+  // Relationships
+  files         File[]
+  project       Project        @relation(fields: [project_pid], references: [pid])
+  project_pid   String
+  assignee      User           @relation(fields: [assignee_id], references: [uid])
+  assignee_id   String
+  mergeRequests MergeRequest[]
 }
 
 model File {
   fid           String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   name          String
-  extention     String
+  extension     String
   size          String
   path          String
   uploaded_time DateTime @default(now())
 
-  //Relationships
-  project          Project       @relation(fields: [project_pid], references: [pid])
-  project_pid      String
-  task             Task          @relation(fields: [task_tid], references: [tid])
-  task_tid         String
-  uploader         User          @relation(fields: [uploader_id], references: [uid])
-  uploader_id      String
-  MergeRequest     MergeRequest? @relation(fields: [mergeRequestMrid], references: [mrid])
-  mergeRequestMrid String?       @db.Char(6)
+  // Relationships
+  project      Project       @relation(fields: [project_pid], references: [pid])
+  project_pid  String
+  task         Task          @relation(fields: [task_tid], references: [tid])
+  task_tid     String
+  uploader     User          @relation(fields: [uploader_id], references: [uid])
+  uploader_id  String
+  mergeRequest MergeRequest? @relation(fields: [mrid], references: [mrid])
+  mrid         String?       @db.Char(6)
 }
 
 model MergeRequest {
   mrid       String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   comment    String?
-  status     String   @default("Pending") //Enum: Pending, Approved, Rejected
+  status     String   @default("Pending") //Enum: "Pending", "Approved", "Rejected"
   created_at DateTime @default(now())
 
   // Relationships
-  files        File[] // fid - n
-  sender       User   @relation("Sender", fields: [sender_uid], references: [uid]) // sender - 1
+  files        File[]
+  sender       User   @relation("Sender", fields: [sender_uid], references: [uid])
   sender_uid   String
-  approver     User   @relation("Approver", fields: [approver_uid], references: [uid]) // approver - 1
+  approver     User   @relation("Approver", fields: [approver_uid], references: [uid])
   approver_uid String
-  task         Task   @relation(fields: [tid], references: [tid]) // task - 1
+  task         Task   @relation(fields: [tid], references: [tid])
   tid          String
-  Mail         Mail[]
+  mails        Mail[]
 }
 
 model Mail {
   mid        String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   content    String
-  category   String   @default("Authorization") //Enum: Authorization, MergeRequest
+  category   String   @default("Authorization") //Enum: "Authorization" or "MergeRequest"
   created_at DateTime @default(now())
 
   // Relationships
-  merge_request MergeRequest @relation(fields: [mrid], references: [mrid]) // mrid - 1
+  merge_request MergeRequest @relation(fields: [mrid], references: [mrid])
   mrid          String
+  recipient     User         @relation(fields: [uid], references: [uid])
+  uid           String
 }
-
-//What I've learnt
-//1. On mapping, the rule is the same on textbook, the 1-N relationship is mapped on the N side
-//2. For the N-M relationship, the mapping is done on the junction table
-//  if the relationship doesn;t have personal attributes, it can be done implicitly

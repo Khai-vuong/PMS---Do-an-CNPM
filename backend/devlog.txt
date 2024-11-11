@@ -38,3 +38,7 @@ Modidy all ids to uuid() but only limited by 6 characters
 
 30/10
 Apply các thay đổi ngày 26. migrate name = change_1
+
+11/11.
+Thêm Mail và MR vào DB, apply DB với migration = change 2
+TODO: studing downloading
