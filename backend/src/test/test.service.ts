@@ -41,7 +41,7 @@ export class TestService {
                 data: {
                     name: 'generated',
                     description: 'This is a generated task',
-                    status: 'testing',
+                    status: 'Done',
                     project_pid: pid,
                     due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                     assignee_id: uid,
@@ -52,7 +52,7 @@ export class TestService {
             const tasks = Array.from({ length: 13 }, (_, index) => ({
                 name: `${index + 1}`,
                 description: `description ${index + 1}`,
-                status: 'testing',
+                status: 'Done',
                 due: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 assignee_id: uid,
                 project_pid: pid,

@@ -34,10 +34,12 @@ model User {
   login_method String   @default("LOCAL") // Could be an enum (e.g., "GOOGLE", "LOCAL")
 
   //Relationships
-  managed_projects Project[] @relation("ManagerProjects")
-  project_ids      Project[] @relation("MemberProjects")
+  managed_projects Project[]      @relation("ManagerProjects")
+  project_ids      Project[]      @relation("MemberProjects")
   files            File[]
   tasks            Task[] //May not be used
+  MergeRequest     MergeRequest[]
+  MergeRequest     MergeRequest[]
 }
 
 model Project {
@@ -59,17 +61,18 @@ model Task {
   tid          String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
   name         String
   description  String
-  status       String   @default("Undone")
+  status       String   @default("Undone") //Enum: Undone, Pending, Accepted, Rejected
   comment      String?
   created_time DateTime @default(now())
   due          DateTime @default(dbgenerated("(now() + interval '7 days')::timestamp"))
 
   //Relationships
-  files       File[]
-  project     Project @relation(fields: [project_pid], references: [pid])
-  project_pid String
-  assignee    User    @relation(fields: [assignee_id], references: [uid])
-  assignee_id String
+  files        File[]
+  project      Project        @relation(fields: [project_pid], references: [pid])
+  project_pid  String
+  assignee     User           @relation(fields: [assignee_id], references: [uid])
+  assignee_id  String
+  MergeRequest MergeRequest[]
 }
 
 model File {
@@ -77,15 +80,46 @@ model File {
   name          String
   extention     String
   size          String
+  path          String
   uploaded_time DateTime @default(now())
 
   //Relationships
-  project     Project @relation(fields: [project_pid], references: [pid])
-  project_pid String
-  task        Task    @relation(fields: [task_tid], references: [tid])
-  task_tid    String
-  uploader    User    @relation(fields: [uploader_id], references: [uid])
-  uploader_id String
+  project          Project       @relation(fields: [project_pid], references: [pid])
+  project_pid      String
+  task             Task          @relation(fields: [task_tid], references: [tid])
+  task_tid         String
+  uploader         User          @relation(fields: [uploader_id], references: [uid])
+  uploader_id      String
+  MergeRequest     MergeRequest? @relation(fields: [mergeRequestMrid], references: [mrid])
+  mergeRequestMrid String?       @db.Char(6)
+}
+
+model MergeRequest {
+  mrid       String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
+  comment    String?
+  status     String   @default("Pending") //Enum: Pending, Approved, Rejected
+  created_at DateTime @default(now())
+
+  // Relationships
+  files        File[] // fid - n
+  sender       User   @relation("Sender", fields: [sender_uid], references: [uid]) // sender - 1
+  sender_uid   String
+  approver     User   @relation("Approver", fields: [approver_uid], references: [uid]) // approver - 1
+  approver_uid String
+  task         Task   @relation(fields: [tid], references: [tid]) // task - 1
+  tid          String
+  Mail         Mail[]
+}
+
+model Mail {
+  mid        String   @id @default(dbgenerated("substring(gen_random_uuid()::text, 1, 6)")) @db.Char(6)
+  content    String
+  category   String   @default("Authorization") //Enum: Authorization, MergeRequest
+  created_at DateTime @default(now())
+
+  // Relationships
+  merge_request MergeRequest @relation(fields: [mrid], references: [mrid]) // mrid - 1
+  mrid          String
 }
 
 //What I've learnt
