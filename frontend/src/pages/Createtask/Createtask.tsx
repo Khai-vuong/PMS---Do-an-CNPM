@@ -12,8 +12,8 @@ const CreateTask: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token"); // Lấy token từ localStorage
-    const url = "http://localhost:5174/api/tasks"; // Cập nhật URL cho API
+    const token = localStorage.getItem("token");
+    const url = "http://localhost:4000/api/tasks";
 
     if (!token) {
       alert("You must be logged in to create a task.");

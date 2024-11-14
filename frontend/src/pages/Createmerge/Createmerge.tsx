@@ -18,7 +18,7 @@ const Createmerge: React.FC = () => {
     e.preventDefault();
 
     const token = localStorage.getItem("token") || "";
-    const url = "http://localhost:5174/api/merge"; // Cập nhật URL cho API
+    const url = "http://localhost:4000/api/merge";
 
     if (!token) {
       alert("You must be logged in to submit the request.");

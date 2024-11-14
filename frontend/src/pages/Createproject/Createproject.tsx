@@ -16,7 +16,7 @@ const CreateProject: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const url = "http://localhost:5174/api/projects"; // Cập nhật URL cho API
+    const url = "http://localhost:4000/api/projects";
 
     if (!token) {
       alert("You must be logged in to create a project.");
