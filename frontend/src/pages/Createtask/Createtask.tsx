@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./Createtask.css";
 
 const CreateTask: React.FC = () => {
@@ -6,12 +7,18 @@ const CreateTask: React.FC = () => {
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const token = "";
-    const url = "";
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
+    const url = "http://localhost:5174/api/tasks"; // Cập nhật URL cho API
+
+    if (!token) {
+      alert("You must be logged in to create a task.");
+      return;
+    }
 
     const taskData = {
       taskName,
@@ -21,25 +28,22 @@ const CreateTask: React.FC = () => {
     };
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
+      const response = await axios.post(url, taskData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(taskData),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Task created successfully:", data);
+      console.log("Task created successfully:", response.data);
       alert("Task created successfully!");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred while creating the task.");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.message || "An error occurred");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+      console.error("Error:", err);
     }
   };
 
@@ -94,6 +98,8 @@ const CreateTask: React.FC = () => {
           Create Task
         </button>
       </form>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };
