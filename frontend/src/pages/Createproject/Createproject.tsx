@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Createproject.css";
+import Header from "../../components/Header/Header";
 
 const CreateProject: React.FC = () => {
   const [projectName, setProjectName] = useState("");
@@ -53,6 +54,8 @@ const CreateProject: React.FC = () => {
   };
 
   return (
+    <>
+    <Header inforName="Dương Trọng Khôi"/>
     <div className="create-project-page">
       <header className="header">
         <img src="path/to/logo.png" alt="Logo" className="logo" />
@@ -106,6 +109,7 @@ const CreateProject: React.FC = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 
