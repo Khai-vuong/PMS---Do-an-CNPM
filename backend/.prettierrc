@@ -1,4 +1,13 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+  "singleQuote": true,           
+  "trailingComma": "all",        
+  "tabWidth": 2,                
+  "semi": true,                  
+  "printWidth": 120,              
+  "bracketSpacing": true,      
+  "arrowParens": "avoid",       
+  "endOfLine": "lf",             
+  "useTabs": false,  
+  "@typescript-eslint/indent": ["error", 2],
+  "@typescript-eslint/semi": ["error", "always"]
 }
