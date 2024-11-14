@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Createtask.css";
+import Header from "../../components/Header/Header";
 
 const CreateTask: React.FC = () => {
   const [taskName, setTaskName] = useState("");
@@ -44,6 +45,8 @@ const CreateTask: React.FC = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="create-task-page">
       <header className="header">
         <img src="path/to/logo.png" alt="Logo" className="logo" />
@@ -95,6 +98,7 @@ const CreateTask: React.FC = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 
