@@ -17,7 +17,6 @@ import { AuthService } from 'src/auth/auth.service';
         storage: diskStorage({
           destination: (req, file, cb) => {
             const rootFolder = configService.get<string>('ROOTFOLDER');
-            console.log('Root folder:', rootFolder);
             cb(null, rootFolder);
           },
           filename: (req, file, cb) => {

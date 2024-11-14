@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   UseGuards,
   Body,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
@@ -20,8 +21,8 @@ import { extname } from 'path';
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  @Post('upload')
   @UseGuards(LocalGuard)
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
@@ -32,7 +33,24 @@ export class FileController {
       throw new HttpException('File not found', 404);
     }
     const { task_id, project_id } = input;
-    this.fileService.uploadFile(project_id ? project_id : 'ni' /* ni : no information */, task_id, user.userID, file);
+    return this.fileService.uploadFile(
+      project_id ? project_id : 'ni' /* ni : no information */,
+      task_id ? task_id : 'ni',
+      user.userID,
+      file,
+    );
+  }
+
+  @UseGuards(LocalGuard)
+  @Get('get-info')
+  async getFileInfo(@Query('fid') fid: string) {
+    return this.fileService.getFileInfo(fid);
+  }
+
+  @UseGuards(LocalGuard)
+  @Get('download')
+  async downloadFile(@Query('tid') tid: string, @Res() res: any) {
+    return this.fileService.downloadFile(tid, res);
   }
 
   // @Post('create-mr')
