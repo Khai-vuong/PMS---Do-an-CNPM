@@ -34,6 +34,7 @@ export class FileService {
       data: {
         name: file.originalname,
         extension: extname(file.originalname),
+        status: project_id !== 'ni' ? 'Approved' : 'None',
         size: file.size + ' bytes',
         path: file.destination,
         project:
@@ -45,7 +46,7 @@ export class FileService {
 
     const newFileName = `${project_id !== 'ni' ? `p${createdFile.project_pid}_` : ``}${
       task_id !== 'ni' ? `t${createdFile.task_tid}_` : ``
-    }f_${createdFile.fid}${extname(file.originalname)}`;
+    }f${createdFile.fid}${extname(file.originalname)}`;
 
     const uploadFile = await this.prismaService.file.update({
       where: { fid: createdFile.fid },
@@ -80,7 +81,7 @@ export class FileService {
     };
   }
 
-  async downloadFile(tid: string, res: any) {
+  async downloadFileByTid(tid: string, res: any) {
     const task = await this.prismaService.task.findUnique({
       where: { tid },
       include: { files: true },
@@ -98,6 +99,39 @@ export class FileService {
     }
 
     const zipPath = path.join(this.rootFolder, 'temp', `task_${tid}.zip`);
+    const output = fs.createWriteStream(zipPath);
+    const archive = archiver('zip', { zlib: { level: 9 } });
+
+    archive.directory(tempDir, false).pipe(output);
+    await archive.finalize();
+
+    output.on('close', () => {
+      res.download(zipPath, (err: number) => {
+        if (err) throw new HttpException('Download failed', err);
+        fs.rmSync(tempDir, { recursive: true, force: true });
+        fs.unlinkSync(zipPath);
+      });
+    });
+  }
+
+  async downloadFileByPid(pid: string, res: any) {
+    const project = await this.prismaService.project.findUnique({
+      where: { pid },
+      include: { files: true },
+    });
+    if (!project) throw new HttpException('Project not found', 404);
+
+    const filePaths = project.files.map(file => file.path);
+    const tempDir = path.join(this.rootFolder, 'temp', `project_${pid}`);
+
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+
+    for (const filePath of filePaths) {
+      const file = path.basename(filePath);
+      fs.copyFileSync(filePath, path.join(tempDir, file));
+    }
+
+    const zipPath = path.join(this.rootFolder, 'temp', `project_${pid}.zip`);
     const output = fs.createWriteStream(zipPath);
     const archive = archiver('zip', { zlib: { level: 9 } });
 

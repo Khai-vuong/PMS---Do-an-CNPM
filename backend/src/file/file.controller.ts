@@ -47,10 +47,22 @@ export class FileController {
     return this.fileService.getFileInfo(fid);
   }
 
+  // @UseGuards(LocalGuard)
+  // @Put('update-info')
+  // async updateFileInfo(@Body() input: { fid: string; name: string }) {
+  //   return this.fileService.updateFileInfo(input);
+  // }
+
   @UseGuards(LocalGuard)
-  @Get('download')
-  async downloadFile(@Query('tid') tid: string, @Res() res: any) {
-    return this.fileService.downloadFile(tid, res);
+  @Get('downloadFromTask')
+  async downloadFileByTid(@Query('tid') tid: string, @Res() res: any) {
+    return this.fileService.downloadFileByTid(tid, res);
+  }
+
+  @UseGuards(LocalGuard)
+  @Get('downloadFromProject')
+  async downloadFileByPid(@Query('pid') pid: string, @Res() res: any) {
+    return this.fileService.downloadFileByPid(pid, res);
   }
 
   // @Post('create-mr')
