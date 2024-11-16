@@ -1,5 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class MergeRequestService {
@@ -31,14 +33,14 @@ export class MergeRequestService {
     const files = await this.prismaService.file.findMany({
       where: { task_tid: tid },
     });
-
     if (files) {
       for (const file of files) {
-        if (file.status !== 'None' || 'Rejected') break;
-        await this.prismaService.file.update({
+        if (file.status !== 'None' && file.status !== 'Rejected') continue;
+        const updatedFile = await this.prismaService.file.update({
           where: { fid: file.fid },
-          data: { status: 'pending' },
+          data: { status: 'Pending' },
         });
+        console.log('file updated', updatedFile);
       }
     }
 
@@ -94,19 +96,42 @@ export class MergeRequestService {
         403,
       );
     }
+
+    const files = await this.prismaService.file.findMany({
+      where: { task_tid: mr.tid },
+    });
+
+    for (const file of files) {
+      if (file.status !== 'Pending') continue;
+      const project_id = (
+        await this.prismaService.task.findUnique({
+          where: { tid: mr.tid },
+          select: { project_pid: true },
+        })
+      ).project_pid;
+      const oldPath = file.path;
+      const parentFolder = path.dirname(oldPath);
+      const extended_name = `p${project_id}_t${file.task_tid}_f${file.fid}${file.extension}`;
+      const newPath = path.join(parentFolder, extended_name);
+      fs.renameSync(oldPath, newPath);
+      const updatedFile = await this.prismaService.file.update({
+        where: { fid: file.fid },
+        data: {
+          status: 'Approved',
+          extended_name: extended_name,
+          path: newPath,
+        },
+      });
+    }
+
     await Promise.all([
-      this.prismaService.file.updateMany({
-        where: { fid: { in: mr.files.map(file => file.fid) } },
-        data: { status: 'Approved' },
-      }),
-      // change extended_name and path of files in here
-      this.prismaService.mergeRequest.update({
-        where: { mrid },
-        data: { status: 'Approved' },
-      }),
       this.prismaService.task.update({
         where: { tid: mr.tid },
         data: { status: 'Done' },
+      }),
+      this.prismaService.mergeRequest.update({
+        where: { mrid },
+        data: { status: 'Approved' },
       }),
     ]);
     return { message: `Merge request ${mrid} approved` };
