@@ -15,6 +15,7 @@
   .header-layout img {
     height: 50px;
     margin-left: 5px;
+    cursor: pointer;
   }
   
   .infor{

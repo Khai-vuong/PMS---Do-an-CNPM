@@ -44,9 +44,7 @@ const Projectlist = () => {
       toLobby(id);
     }
   };
-
-
-
+  
   return (
     <>
     <Header inforName="Dương Trọng Khôi"/>

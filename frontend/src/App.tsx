@@ -9,6 +9,7 @@ import Createproject from "./pages/Createproject/Createproject.tsx";
 import Createtask from "./pages/Createtask/Createtask.tsx";
 import Wilderness from "./pages/Wilderness/Wilderness.tsx";
 import Createmerge from "./pages/Createmerge/Createmerge.tsx";
+import Mail from "./pages/Mail/Mail.tsx";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
           <Route path="/task/create" element={<Createtask />}></Route>
           <Route path="/tasks/create-mr" element={<Createmerge />}></Route>
           <Route path="*" element={<Wilderness />}></Route>
+          <Route path="/mail" element={<Mail />}></Route>
+          
         </Routes>
       </Router>
     </>
