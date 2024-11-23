@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MailListDto } from 'DTOs/mail-list.dto';
 import { PrismaService } from 'prisma/prisma.service';
+import { PageDTO } from 'src/lobby/dtos/page.dto';
 import { paginate } from 'src/utils/pagination.util';
 
 @Injectable()
@@ -84,16 +85,33 @@ export class MailService {
             throw new NotFoundException("User not found");
         }
         // Assuming listMails is an array of mail objects and each mail object has the properties: category, content, and created_at
-        const mailsInfo: MailListDto[] = listMails.map(mail => {
-        const { category, content, created_at } = mail;
-                return { category, content, time: created_at } as MailListDto;
-        }).filter((mail): mail is MailListDto => mail !== null); 
-
-
+        const mailsInfo: MailListDto[] = await Promise.all(listMails.map(async mail => {
+            const { mid, mrid, category, content} = mail;
+            const merge = await this.prisma.mergeRequest.findUnique({
+                where: { mrid: mrid }
+            });
+            if (!merge) {
+                return null;
+            }
+            let task = merge.tid;
+            return { mid, mrid, tid: task, content, category } as MailListDto;
+        })).then(mails => mails.filter((mail): mail is MailListDto => mail !== null));
+        const pageCount = Math.ceil(listMails.length / parseInt(pageSize));
 
         const returnData = await paginate(mailsInfo, page, pageSize);
+        const pageMeta = {
+            pageCount: pageCount,
+            pageSize: returnData.perPage,
+            currentPage: returnData.pagenum,
+            hasPreviousPage: returnData.pagenum > 1,
+            hasNextPage: returnData.pagenum < pageCount
+        };
+        // Check if returnData.data is empty or undefined
+        if (!returnData.data || returnData.data.length === 0) {
+            throw new NotFoundException("No paginated mail found");
+        }   
+        
 
-
-        return { username: user.username, mails: returnData.data };
+        return new PageDTO<MailListDto>(returnData.data, pageMeta);
     }
 }
