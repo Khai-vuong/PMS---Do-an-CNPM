@@ -2,7 +2,9 @@
 
 
 export class MailListDto {
-    category: 'Authorization'|'MergeRequest';
+    mid: string;
+    tid: string;
+    mrid: string;
     content: string;
-    time: Date;
+    category: 'Authorization'|'MergeRequest';
 }
