@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Createamerge.css";
+import Header from "../../components/Header/Header";
 
 const Createmerge: React.FC = () => {
   const [taskName, setTaskName] = useState("");
@@ -48,6 +49,8 @@ const Createmerge: React.FC = () => {
   };
 
   return (
+    <>
+    <Header inforName="Dương Trọng Khôi"/>
     <div className="createmerge-container">
       <header className="createmerge-header">
         <img src="path_to_logo" alt="logo" className="logo" />
@@ -89,6 +92,7 @@ const Createmerge: React.FC = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 
