@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Createproject.css";
 import Header from "../../components/Header/Header";
 
@@ -9,12 +10,19 @@ const CreateProject: React.FC = () => {
   const [modelImage, setModelImage] = useState(
     "/src/pages/Createproject/waterfall.png"
   );
+  const [error, setError] = useState<string | null>(null);
+
+  const token = localStorage.getItem("token") || "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const token = ""; 
-    const url = ""; 
+    const url = "http://localhost:4000/api/projects";
+
+    if (!token) {
+      alert("You must be logged in to create a project.");
+      return;
+    }
 
     const projectData = {
       projectName,
@@ -23,24 +31,22 @@ const CreateProject: React.FC = () => {
     };
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
+      const response = await axios.post(url, projectData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(projectData),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
+      console.log("Project created successfully:", response.data);
+      alert("Project created successfully!");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.message || "An error occurred");
+      } else {
+        setError("An unexpected error occurred.");
       }
-
-      const data = await response.json();
-      console.log("Project created successfully:", data);
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred while creating the project.");
+      console.error("Error:", err);
     }
   };
 
@@ -52,6 +58,12 @@ const CreateProject: React.FC = () => {
         : "/src/pages/Createproject/scrum.png"
     );
   };
+
+  useEffect(() => {
+    if (!token) {
+      alert("You are not logged in.");
+    }
+  }, [token]);
 
   return (
     <>
@@ -108,6 +120,8 @@ const CreateProject: React.FC = () => {
           Create Project
         </button>
       </form>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
     </>
   );
