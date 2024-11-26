@@ -9,6 +9,8 @@ import Createproject from "./pages/Createproject/Createproject.tsx";
 import Createtask from "./pages/Createtask/Createtask.tsx";
 import Wilderness from "./pages/Wilderness/Wilderness.tsx";
 import Createmerge from "./pages/Createmerge/Createmerge.tsx";
+import Lobby from "./pages/Lobby/Lobby.tsx";
+import DemoPage from "./pages/DemoPage/Demo.tsx";
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
           <Route path="/tasks/create-mr" element={<Createmerge />}></Route>
           <Route path="/project/create" element={<Createproject />}></Route>
           <Route path="/merge/create" element={<Createmerge />}></Route>
+          <Route path="/lobby/*" element={<Lobby />}></Route>
+          <Route path="/demo" element={<DemoPage />}></Route>
+
           <Route path="*" element={<Wilderness />}></Route>
 
         </Routes>
