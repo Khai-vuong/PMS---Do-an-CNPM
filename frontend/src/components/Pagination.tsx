@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./Pagination.css";
 
+interface Metadata {
+  pageCount: number;
+  pageSize: number;
+  currentPage: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
 interface PaginationProps<T> {
   ListDTO: {
-    totalItems: number;
-    itemsPerPage: number;
+    metadata : Metadata
     data: T[];
   };
   fetchPage: (currentPage: number) => Promise<void>;
@@ -16,9 +23,9 @@ const Pagination = <T,>({
   fetchPage,
   renderItem,
 }: PaginationProps<T>) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(ListDTO.metadata.currentPage);
 
-  const totalPages = Math.ceil(ListDTO.totalItems / ListDTO.itemsPerPage);
+  const totalPages = ListDTO.metadata.pageCount;
 
   useEffect(() => {
     fetchPage(currentPage);
@@ -34,13 +41,13 @@ const Pagination = <T,>({
     <div>
       <div className="pagination-items">
         {ListDTO.data.map((item) => (
-          <div>{renderItem(item)}</div>
+          {renderItem(item)}
         ))}
       </div>
       <div className="pagination-controls">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          disabled={ !ListDTO.metadata.hasPreviousPage}
         >
           Previous
         </button>
@@ -55,7 +62,7 @@ const Pagination = <T,>({
         ))}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          disabled={ !ListDTO.metadata.hasNextPage}
         >
           Next
         </button>

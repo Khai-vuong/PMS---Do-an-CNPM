@@ -28,10 +28,36 @@ interface MailPageDTO {
 const MailPage: React.FC = () => {
   const [mailData, setMailData] = useState<MailPageDTO | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [username, setUsername] = useState("User Name");
+
+  // useEffect(() => {
+  //   fetchPage(currentPage);
+  // }, [currentPage]);
+
+  const getInitMail = async () => {
+      try {
+          const response = await axios.get("http://localhost:4000/mail/init");
+          console.log("Mail data:", response.data);
+      } catch (error) {
+        console.error("Error fetching mail data:", error);
+      }
+  }
+
+  const initUsername = async () => {
+      try {
+          const response = await axios.get("http://localhost:4000/utils/username");
+          alert(response.data);
+          setUsername(response.data);
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+  }
+  
 
   useEffect(() => {
-    fetchPage(currentPage);
-  }, [currentPage]);
+    getInitMail();  
+    initUsername();
+  }, []);
 
   const fetchPage = async (page: number) => {
     try {
@@ -62,10 +88,10 @@ const MailPage: React.FC = () => {
 
   return (
     <div className="mail-page">
-      <Header inforName="User Name" />
+      <Header inforName={username } />
       <div className="mail-content">
         <h1>Mail Page</h1>
-        {mailData ? (
+        {/* {mailData ? (
           <Pagination
             ListDTO={mailData}
             fetchPage={fetchPage}
@@ -74,7 +100,7 @@ const MailPage: React.FC = () => {
           />
         ) : (
           <p>Loading mail data...</p>
-        )}
+        )} */}
       </div>
     </div>
   );
