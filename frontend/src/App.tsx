@@ -27,6 +27,8 @@ function App() {
           <Route path="/project/create" element={<Createproject />}></Route>
           <Route path="/merge/create" element={<Createmerge />}></Route>
           <Route path="/lobby/*" element={<Lobby />}></Route>
+          <Route path="/mail" element={<DemoPage />}></Route>
+
           <Route path="/demo" element={<DemoPage />}></Route>
 
           <Route path="*" element={<Wilderness />}></Route>

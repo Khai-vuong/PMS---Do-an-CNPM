@@ -70,7 +70,7 @@ const Lobby: React.FC = () => {
 
     const renderItem = (item: TaskDTO) => {
         return (
-            <div> {item.name}    {item.description}        {item.assignee}</div>
+            <div key={item.tid}> {item.name}    {item.description}        {item.assignee}</div>
         );
     };
 

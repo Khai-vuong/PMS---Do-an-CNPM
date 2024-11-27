@@ -9,14 +9,12 @@ interface PaginationProps<T> {
   };
   fetchPage: (currentPage: number) => Promise<void>;
   renderItem: (item: T) => React.ReactNode;
-  keySelector: (item: T) => string | number;
 }
 
 const Pagination = <T,>({
   ListDTO,
   fetchPage,
   renderItem,
-  keySelector,
 }: PaginationProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -36,7 +34,7 @@ const Pagination = <T,>({
     <div>
       <div className="pagination-items">
         {ListDTO.data.map((item) => (
-          <div key={keySelector(item)}>{renderItem(item)}</div>
+          <div>{renderItem(item)}</div>
         ))}
       </div>
       <div className="pagination-controls">
