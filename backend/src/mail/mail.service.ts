@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MailListDto } from 'DTOs/mail-list.dto';
 import { PrismaService } from 'prisma/prisma.service';
-import { PageDTO } from 'src/lobby/dtos/page.dto';
+import { PageDTO } from 'DTOs/page.dto';
 import { paginate } from 'src/utils/pagination.util';
 
 @Injectable()
 export class MailService {
-    constructor(private prisma : PrismaService) { };
+    constructor(private prisma: PrismaService) { };
 
     //----for user to get mail----
     async initMail(uid: string) {
         return this.MailPage("1", "5", uid);
-    }   
+    }
     async getMail(page: string, pageSize: string, uid: string) {
         return this.MailPage(page, pageSize, uid);
     }
@@ -86,7 +86,7 @@ export class MailService {
         }
         // Assuming listMails is an array of mail objects and each mail object has the properties: category, content, and created_at
         const mailsInfo: MailListDto[] = await Promise.all(listMails.map(async mail => {
-            const { mid, mrid, category, content} = mail;
+            const { mid, mrid, category, content } = mail;
             const merge = await this.prisma.mergeRequest.findUnique({
                 where: { mrid: mrid }
             });
@@ -109,8 +109,8 @@ export class MailService {
         // Check if returnData.data is empty or undefined
         if (!returnData.data || returnData.data.length === 0) {
             throw new NotFoundException("No paginated mail found");
-        }   
-        
+        }
+
 
         return new PageDTO<MailListDto>(returnData.data, pageMeta);
     }

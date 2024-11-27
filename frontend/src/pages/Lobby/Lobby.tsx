@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import Header from '../../components/Header/Header';
 import Pmconsole from '../../components/PMconsole/Pmconsole';
+import Pagination from '../../components/Pagination';
 import './Lobby.css';
 import { LobbyUserDTO } from '../../DTOs/LobbyUser.dto';
 import { LobbyProjectDTO } from '../../DTOs/LobbyProject.dto';
@@ -32,13 +33,50 @@ const Lobby: React.FC = () => {
                 const { pname, pdescription, pmodel, pphase } = response.data;
                 setProjectData({ pname, pdescription, pmodel, pphase });
 
-                const taskPageDto = response.data.PageDTO;
+                //Continue work here
+                const tasks = response.data.PageDTO.data;
+
+                alert(JSON.stringify(tasks));
+                const totalItems = tasks.length;
+                const itemsPerPage = response.data.PageDTO.metadata.pageSize;
+
+                const taskPageDto = {
+                    'totalItems' : totalItems,
+                    'itemsPerPage' : itemsPerPage,
+                    'data' : tasks
+                };
                 setTaskData(taskPageDto);
             })
             .catch(error => {
                 console.error('There was an error fetching the data!', error);
             });
     }, []);
+
+    const fetchPage = async (currentPage: number) => {
+        try {
+            const response = await axios.get(`http://localhost:4000/lobby/tasks/?pid=${pid}&page=${currentPage}&pageSize=5`);
+            const taskList = {
+                totalItems: response.data.data.length,
+                itemsPerPage: response.data.metadata.pageSize,
+                data: response.data.data
+            }
+            setTaskData(taskList);
+            
+
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
+        }
+    };
+
+    const renderItem = (item: TaskDTO) => {
+        return (
+            <div> {item.name}    {item.description}        {item.assignee}</div>
+        );
+    };
+
+    const keySelector = (item: TaskDTO) => {
+        return item.tid;
+    };
 
     const pullAllCode = () => {
         if (confirm('This will pull all files from this project, are you sure?')) {
@@ -73,6 +111,11 @@ const Lobby: React.FC = () => {
                         </div>
                         <div className="tasklist-lobby">
                             <h1>tasklist</h1>
+                            <Pagination ListDTO={taskData || {totalItems: 0, itemsPerPage: 0, data: []}} 
+                                        fetchPage={fetchPage}
+                                        renderItem={renderItem}
+                                        keySelector={keySelector}/>
+
                         </div>
                     </div>
                 </div>

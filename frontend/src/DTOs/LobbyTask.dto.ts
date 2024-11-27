@@ -11,10 +11,12 @@ export interface TaskDTO {
     name: string;
     description: string;
     assignee: string;
-
+    tid: string;
 }
 
 export interface LobbyTaskDTO<T> {
     data: T[];
-    metadata: PageMetaDTO;
+    totalItems: number;
+    itemsPerPage: number;
+    // metadata: PageMetaDTO;
 }
