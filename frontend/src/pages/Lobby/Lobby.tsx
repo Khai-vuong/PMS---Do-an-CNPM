@@ -114,7 +114,7 @@ const Lobby: React.FC = () => {
                             <Pagination ListDTO={taskData || {totalItems: 0, itemsPerPage: 0, data: []}} 
                                         fetchPage={fetchPage}
                                         renderItem={renderItem}
-                                        keySelector={keySelector}/>
+                                        />
 
                         </div>
                     </div>
