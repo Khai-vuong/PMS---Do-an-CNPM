@@ -1,9 +1,14 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+
 import axios from "axios";
 import "./Createtask.css";
 import Header from "../../components/Header/Header";
 
 const CreateTask: React.FC = () => {
+  const [searchParams] = useSearchParams();
+
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
@@ -14,18 +19,27 @@ const CreateTask: React.FC = () => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-    const url = "http://localhost:4000/api/tasks";
+    const url = "http://localhost:4000/tasks/new";
+
 
     if (!token) {
       alert("You must be logged in to create a task.");
       return;
     }
 
+    const pid = searchParams.get("pid");
+
+    if (!pid) {
+      alert("Project ID is missing from the URL.");
+      return;
+    }
+
     const taskData = {
-      taskName,
-      description,
-      assignee,
-      dueDate,
+      name: taskName,
+      description: description,
+      status: "Undone",
+      assignee: assignee,
+      due: dueDate,
     };
 
     try {
@@ -33,6 +47,9 @@ const CreateTask: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          pid: pid,
         },
       });
 
@@ -50,60 +67,60 @@ const CreateTask: React.FC = () => {
 
   return (
     <>
-    <Header/>
-    <div className="create-task-page">
-      <header className="header">
-        <img src="path/to/logo.png" alt="Logo" className="logo" />
-        <div className="user-info">
-          <img
-            src="/src/pages/Createproject/image.png"
-            alt="User"
-            className="profile-pic"
+      <Header />
+      <div className="create-task-page">
+        <header className="header">
+          <img src="path/to/logo.png" alt="Logo" className="logo" />
+          <div className="user-info">
+            <img
+              src="/src/pages/Createproject/image.png"
+              alt="User"
+              className="profile-pic"
+            />
+            <span className="username">Nguyen Van A</span>
+          </div>
+        </header>
+
+        <h2>Create Task Page</h2>
+
+        <form onSubmit={handleSubmit} className="task-form">
+          <label>Task name</label>
+          <input
+            type="text"
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
+            placeholder="Enter task name"
           />
-          <span className="username">Nguyen Van A</span>
-        </div>
-      </header>
 
-      <h2>Create Task Page</h2>
+          <label>Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter task description"
+          ></textarea>
 
-      <form onSubmit={handleSubmit} className="task-form">
-        <label>Task name</label>
-        <input
-          type="text"
-          value={taskName}
-          onChange={(e) => setTaskName(e.target.value)}
-          placeholder="Enter task name"
-        />
+          <label>Assignee</label>
+          <input
+            type="text"
+            value={assignee}
+            onChange={(e) => setAssignee(e.target.value)}
+            placeholder="Enter assignee name"
+          />
 
-        <label>Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter task description"
-        ></textarea>
+          <label>Due date (Optional)</label>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+          />
 
-        <label>Assignee</label>
-        <input
-          type="text"
-          value={assignee}
-          onChange={(e) => setAssignee(e.target.value)}
-          placeholder="Enter assignee name"
-        />
+          <button type="submit" className="submit-btn">
+            Create Task
+          </button>
+        </form>
 
-        <label>Due date (Optional)</label>
-        <input
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-        />
-
-        <button type="submit" className="submit-btn">
-          Create Task
-        </button>
-      </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+      </div>
     </>
   );
 };
