@@ -12,6 +12,7 @@ import Createmerge from "./pages/Createmerge/Createmerge.tsx";
 import Lobby from "./pages/Lobby/Lobby.tsx";
 import DemoPage from "./pages/DemoPage/Demo.tsx";
 import MailPage from "./pages/MailPage/MailPage.tsx";
+import Mail from "./pages/Mail/Mail.tsx";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/mail/*" element={<MailPage />}></Route>
 
           <Route path="/demo" element={<DemoPage />}></Route>
+
 
           <Route path="*" element={<Wilderness />}></Route>
 
