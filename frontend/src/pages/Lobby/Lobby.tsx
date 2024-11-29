@@ -13,6 +13,8 @@ import { LobbyProjectDTO } from '../../DTOs/LobbyProject.dto';
 import { LobbyTaskDTO, TaskDTO } from '../../DTOs/LobbyTask.dto';
 
 const Lobby: React.FC = () => {
+
+
     const [searchParams] = useSearchParams();
 
     const [pid] = useState(searchParams.get("pid"));
@@ -27,6 +29,8 @@ const Lobby: React.FC = () => {
         axios.get(`http://localhost:4000/lobby/init/?pid=${pid}`) // lobby/init Query pid
             .then(response => {
 
+                console.log(response.data);
+
                 const { username, role } = response.data;
                 setUserData({ username, role });
 
@@ -34,18 +38,8 @@ const Lobby: React.FC = () => {
                 setProjectData({ pname, pdescription, pmodel, pphase });
 
                 //Continue work here
-                const tasks = response.data.PageDTO.data;
 
-                alert(JSON.stringify(tasks));
-                const totalItems = tasks.length;
-                const itemsPerPage = response.data.PageDTO.metadata.pageSize;
-
-                const taskPageDto = {
-                    'totalItems' : totalItems,
-                    'itemsPerPage' : itemsPerPage,
-                    'data' : tasks
-                };
-                setTaskData(taskPageDto);
+                setTaskData(response.data.PageDTO);
             })
             .catch(error => {
                 console.error('There was an error fetching the data!', error);
@@ -55,13 +49,7 @@ const Lobby: React.FC = () => {
     const fetchPage = async (currentPage: number) => {
         try {
             const response = await axios.get(`http://localhost:4000/lobby/tasks/?pid=${pid}&page=${currentPage}&pageSize=5`);
-            const taskList = {
-                totalItems: response.data.data.length,
-                itemsPerPage: response.data.metadata.pageSize,
-                data: response.data.data
-            }
-            setTaskData(taskList);
-            
+            setTaskData(response.data);
 
         } catch (error) {
             console.error("Failed to fetch data:", error);
@@ -70,9 +58,13 @@ const Lobby: React.FC = () => {
 
     const renderItem = (item: TaskDTO) => {
         return (
-            <div key={item.tid} className='taskItem-lobby'> {item.name}    {item.description}        {item.assignee}</div>
+            <div key={item.tid} className='taskItem-lobby' onClick={taskCLickHandling}>
+                {item.name}    {item.description}        {item.assignee}
+            </div>
         );
     };
+    //Continue work here
+    const taskCLickHandling = () => { };
 
     const keySelector = (item: TaskDTO) => {
         return item.tid;
@@ -111,10 +103,10 @@ const Lobby: React.FC = () => {
                         </div>
                         <div className="tasklist-lobby">
                             <h1>tasklist</h1>
-                            <Pagination ListDTO={taskData || {totalItems: 0, itemsPerPage: 0, data: []}} 
-                                        fetchPage={fetchPage}
-                                        renderItem={renderItem}
-                                        />
+                            <Pagination ListDTO={taskData || { data: [], metadata: { pageCount: 0, pageSize: 0, currentPage: 0, hasPreviousPage: false, hasNextPage: false } }}
+                                fetchPage={fetchPage}
+                                renderItem={renderItem}
+                            />
 
                         </div>
                     </div>

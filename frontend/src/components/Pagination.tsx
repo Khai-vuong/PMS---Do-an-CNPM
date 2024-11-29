@@ -11,7 +11,7 @@ interface Metadata {
 
 interface PaginationProps<T> {
   ListDTO: {
-    metadata : Metadata
+    metadata: Metadata;
     data: T[];
   };
   fetchPage: (currentPage: number) => Promise<void>;
@@ -41,13 +41,13 @@ const Pagination = <T,>({
     <div>
       <div className="pagination-items">
         {ListDTO.data.map((item) => (
-          {renderItem(item)}
+          <div> {renderItem(item)}</div>
         ))}
       </div>
       <div className="pagination-controls">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
-          disabled={ !ListDTO.metadata.hasPreviousPage}
+          disabled={!ListDTO.metadata.hasPreviousPage}
         >
           Previous
         </button>
@@ -62,7 +62,7 @@ const Pagination = <T,>({
         ))}
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={ !ListDTO.metadata.hasNextPage}
+          disabled={!ListDTO.metadata.hasNextPage}
         >
           Next
         </button>

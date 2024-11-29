@@ -30,40 +30,40 @@ const MailPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [username, setUsername] = useState("User Name");
 
-  // useEffect(() => {
-  //   fetchPage(currentPage);
-  // }, [currentPage]);
+  useEffect(() => {
+    fetchPage(currentPage);
+  }, [currentPage]);
 
   const getInitMail = async () => {
-      try {
-          const response = await axios.get("http://localhost:4000/mail/init");
-          console.log("Mail data:", response.data);
-      } catch (error) {
-        console.error("Error fetching mail data:", error);
-      }
+    try {
+      const response = await axios.get("http://localhost:4000/mail/init");
+      console.log("Mail data:", response.data);
+    } catch (error) {
+      console.error("Error fetching mail data:", error);
+    }
   }
 
   const initUsername = async () => {
-      try {
-          const response = await axios.get("http://localhost:4000/utils/username");
-          alert(response.data);
-          setUsername(response.data);
-      } catch (error) {
-        console.error("Error fetching username:", error);
-      }
+    try {
+      const response = await axios.get("http://localhost:4000/utils/username");
+      alert(response.data);
+      setUsername(response.data);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
   }
-  
+
 
   useEffect(() => {
-    getInitMail();  
+    getInitMail();
     initUsername();
   }, []);
 
-  const fetchPage = async (page: number) => {
+  const fetchPage = async (currentPage: number) => {
     try {
       const response = await axios.get("http://localhost:4000/mail", {
         params: {
-          page,
+          page: currentPage,
           pageSize: 5, // Adjust page size as needed
         },
       });
@@ -88,19 +88,18 @@ const MailPage: React.FC = () => {
 
   return (
     <div className="mail-page">
-      <Header inforName={username } />
+      <Header inforName={username} />
       <div className="mail-content">
         <h1>Mail Page</h1>
-        {/* {mailData ? (
+        {mailData ? (
           <Pagination
             ListDTO={mailData}
             fetchPage={fetchPage}
             renderItem={renderItem}
-            keySelector={keySelector}
           />
         ) : (
           <p>Loading mail data...</p>
-        )} */}
+        )}
       </div>
     </div>
   );
