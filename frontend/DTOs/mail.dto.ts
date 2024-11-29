@@ -7,6 +7,6 @@ export class MailDto {
 
     content?: string;
 
-    category?: 'MR' ;
+    category?: 'MR' | 'Authorize';
 
 }

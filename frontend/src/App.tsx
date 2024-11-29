@@ -23,9 +23,10 @@ function App() {
           <Route path="/projects/create" element={<Createproject />}></Route>
           <Route path="/task/create" element={<Createtask />}></Route>
           <Route path="/tasks/create-mr" element={<Createmerge />}></Route>
-          <Route path="*" element={<Wilderness />}></Route>
           <Route path="/mail" element={<Mail />}></Route>
-          
+
+          <Route path="*" element={<Wilderness />}></Route>
+
         </Routes>
       </Router>
     </>
