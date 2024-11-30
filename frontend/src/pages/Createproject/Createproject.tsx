@@ -66,16 +66,6 @@ const CreateProject: React.FC = () => {
 
   return (
     <div className="create-project-page">
-      <header className="header">
-        <img src="path/to/logo.png" alt="Logo" className="logo" />
-        <div className="user-info">
-          <div className="profile-pic">
-            <img src="/src/pages/Createproject/image.png" alt="User Pic" />
-          </div>
-          <span className="username">Nguyen Van A</span>
-        </div>
-      </header>
-
       <h2>Create Project Page</h2>
 
       <form onSubmit={handleSubmit} className="project-form">
