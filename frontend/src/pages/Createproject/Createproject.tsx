@@ -67,20 +67,11 @@ const CreateProject: React.FC = () => {
   }, [token]);
 
   return (
-    <>
-      <Header inforName="Dương Trọng Khôi" />
-      <div className="create-project-page">
-        <header className="header">
-          <img src="path/to/logo.png" alt="Logo" className="logo" />
-          <div className="user-info">
-            <div className="profile-pic">
-              <img src="/src/pages/Createproject/image.png" alt="User Pic" />
-            </div>
-            <span className="username">Nguyen Van A</span>
-          </div>
-        </header>
 
-        <h2>Create Project Page</h2>
+<>
+    <Header inforName="Dương Trọng Khôi" />
+    <div className="create-project-page">
+      <h2>Create Project Page</h2>
 
         <form onSubmit={handleSubmit} className="project-form">
           <label>Project Name</label>

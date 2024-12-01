@@ -69,17 +69,6 @@ const CreateTask: React.FC = () => {
     <>
       <Header />
       <div className="create-task-page">
-        <header className="header">
-          <img src="path/to/logo.png" alt="Logo" className="logo" />
-          <div className="user-info">
-            <img
-              src="/src/pages/Createproject/image.png"
-              alt="User"
-              className="profile-pic"
-            />
-            <span className="username">Nguyen Van A</span>
-          </div>
-        </header>
 
         <h2>Create Task Page</h2>
 
