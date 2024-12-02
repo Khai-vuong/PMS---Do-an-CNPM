@@ -26,8 +26,6 @@ const Lobby: React.FC = () => {
 
     //Get initial data
     useEffect(() => {
-        const pid = searchParams.get("pid");
-
         axios.get(`http://localhost:4000/lobby/init/?pid=${pid}`) // lobby/init Query pid
             .then(response => {
 
@@ -61,19 +59,28 @@ const Lobby: React.FC = () => {
     const renderItem = (item: TaskDTO) => {
         return (
             <div key={item.tid} className='taskItem-lobby' onClick={() => taskClickHandling(item)}>
-                {item.name}            {item.description}                    {item.assignee}
+                <div className="name">{item.name}</div>
+                <div className="description">{item.description}</div>
+                <div className="assignee">{item.assignee}</div>
             </div>
         );
     };
+
     const taskClickHandling = (item: TaskDTO): any => {
         const url = `/mr/?pid=${pid}&tid=${item.tid}`;
-        // alert(url);
         navigate(url);
     };
 
-    const pullAllCode = () => {
+    const pullAllCode = async () => {
         if (confirm('This will pull all files from this project, are you sure?')) {
+
             alert('Pulling code is in progress');
+
+            await axios.get(`http://localhost:4000/file/downloadFromProject?pid=${pid}`)
+                .then(response => {
+                    alert('Pulling code is done');
+                })
+
         }
         else {
             alert('Pulling code is canceled');
@@ -90,6 +97,7 @@ const Lobby: React.FC = () => {
                     <div className="sidebar-lobby">
                         <h1>{projectData?.pname}</h1>
                         <h3>{projectData?.pdescription}</h3>
+                        <h3>Phase: {projectData?.pphase ? projectData.pphase : 'No info'}</h3>
                     </div>
                     <div className="maincontent-lobby">
 

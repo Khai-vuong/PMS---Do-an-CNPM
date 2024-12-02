@@ -89,4 +89,28 @@
     padding: 10px;
     border-radius: 8px;
     margin: 10px 0; 
+
+    display: flex;
+    white-space: pre-wrap;
+}
+
+.taskItem-lobby:hover {
+    cursor: pointer;
+}
+.taskItem-lobby .name {
+    flex: 1;
+    text-align: left;
+    padding-left: 20px;
+}
+
+.taskItem-lobby .description {
+    flex: 2;
+    text-align: center;
+}
+
+.taskItem-lobby .assignee {
+    flex: 1;
+    text-align: right;
+    padding-right: 20px;
+
 }

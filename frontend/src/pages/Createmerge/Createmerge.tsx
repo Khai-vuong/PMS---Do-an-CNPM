@@ -43,7 +43,12 @@ const CreateMergePage: React.FC = () => {
 
 
     try {
-      console.log("form data: " + formData);
+      // console.log("form data: " + JSON.stringify(formData));
+
+      console.log("FormData content:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
 
       const response = await axios.post(url, formData, {

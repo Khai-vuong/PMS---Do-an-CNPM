@@ -72,6 +72,16 @@ export class TasksService {
         });
         return { message: `success` };
     }
+
+    async getName(tid: string) {
+        const existingTask = await this.prisma.task.findUnique({ where: { tid } });
+
+        if (!existingTask) {
+            throw new HttpException(`Task with tid ${tid} not found`, HttpStatus.NOT_FOUND);
+        }
+
+        return { name: existingTask.name };
+    }
     // async findAll() {
     //     return await this.prisma.task.findMany();
     // }

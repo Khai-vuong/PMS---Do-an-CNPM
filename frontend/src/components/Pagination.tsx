@@ -51,7 +51,9 @@ const Pagination = <T,>({
         >
           Previous
         </button>
-        {Array.from({ length: totalPages }, (_, index) => (
+
+
+        {/* {Array.from({ length: totalPages }, (_, index) => (
           <button
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
@@ -59,7 +61,13 @@ const Pagination = <T,>({
           >
             {index + 1}
           </button>
-        ))}
+        ))} */}
+
+        <div className="pagination-currentPage">
+          {ListDTO.metadata.currentPage}
+        </div>
+
+
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={!ListDTO.metadata.hasNextPage}
