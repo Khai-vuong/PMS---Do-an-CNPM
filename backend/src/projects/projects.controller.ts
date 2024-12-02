@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { GetUserID } from "src/utils/get-user.decorator";
 import { LocalGuard } from "src/utils/local.guard";
 import { CreateProjectDto } from "DTOs/create-projects.dto";
 import { UpdateProjectDto } from "DTOs/update-projects-dto";
+import { IsManagerGuard } from "src/is-manager/is-manager.guard";
 
 @Controller('projects')
 export class ProjectsController {
@@ -55,4 +56,22 @@ export class ProjectsController {
     async deleteProject(@GetUserID() user: any, @Param('pid') pid: string) {
         return this.projectsService.deleteProject(user.userID, pid);
     }
+    @UseGuards(IsManagerGuard)
+    @Put('authorize')
+    async authorizeMember(
+        @GetUserID() user: any,
+        @Query('member') memberId: string,
+        @Query('pid') projectId: string
+    ) {
+        return this.projectsService.toggleMemberRole(user.userID, memberId, projectId);
+    }
+    @UseGuards(IsManagerGuard)
+    @Put('NextPhase')
+    async switchPhase(
+        @GetUserID() user: any,
+        @Query('pid') projectId: string
+    ) {
+        return this.projectsService.switchProjectPhase(user.userID, projectId);
+    }
+    
 }
