@@ -17,7 +17,7 @@
     background-color:  #0056b3;
     padding-top: 80px;
 }   
-table {
+.body-projectlist {
     width: 100%;
     border-collapse: collapse;
     max-width: 800px;
@@ -25,11 +25,11 @@ table {
     border-radius: 10px; /* Adds a 10px radius to the table corners */
     overflow: hidden; 
 }
-table thead {
+.body-projectlist thead {
     color: rgb(255, 255, 255);
 }
-table th,
-table td {
+.body-projectlist th,
+.body-projectlist td {
     padding: 12px;
     border: 1px solid #ddd;
     text-align: center;
@@ -37,15 +37,15 @@ table td {
     border: none;
 }
 
-table th {
+.body-projectlist th {
     background-color: #d5d5d5;
 }
-table th:first-child, td:first-child, /* Name column */
-table th:nth-child(2),td:nth-child(2) { /* Position column */
+.body-projectlist th:first-child, td:first-child, /* Name column */
+.body-projectlist th:nth-child(2),td:nth-child(2) { /* Position column */
   text-align: left;
 }
-table th:nth-child(3),td:nth-child(3), /* Model column */
-table th:nth-child(4),td:nth-child(4) { /* Phase column */
+.body-projectlist th:nth-child(3),td:nth-child(3), /* Model column */
+.body-projectlist th:nth-child(4),td:nth-child(4) { /* Phase column */
   text-align: right;
 }
 

@@ -56,6 +56,8 @@ export class MergeRequestService {
         files: { connect: files.map(file => ({ fid: file.fid })) },
       },
     });
+
+    console.log( JSON.stringify(mr));
     return { message: `Merge request ${mr.mrid} created` };
   }
 

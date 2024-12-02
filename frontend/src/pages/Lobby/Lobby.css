@@ -13,7 +13,7 @@
     width: auto;
     height: auto;
     padding: 20px;
-    margin-top: 150px;
+    margin-top: 300px;
 
     display: flex;
     background-color: brown;
@@ -64,8 +64,29 @@
 }
 
 .tasklist-lobby {
-    background-color: #e8f5e9;
-    padding: 20px;
+    /* background-color: #e8f5e9; */
+    box-sizing: border-box;
+    
+    background-color: #1db3e0;
+    /* padding: 20px; */
+    padding: 30px 20px 20px 20px;
+    border-radius: 8px;
+    min-height: 400px;
+    /* overflow: auto;  */
 
-    min-height: 200px;
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: stretch;
+
+    ;
+
+}
+
+.taskItem-lobby {
+    box-sizing: border-box;
+
+    background-color: #ffc800;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0; 
 }

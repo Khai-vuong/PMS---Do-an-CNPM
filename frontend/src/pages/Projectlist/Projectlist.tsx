@@ -44,15 +44,15 @@ const Projectlist = () => {
       toLobby(id);
     }
   };
-  
+
   return (
     <>
-    <Header inforName="Dương Trọng Khôi"/>
+      <Header inforName="Dương Trọng Khôi" />
       <div className="container-list">
         <div className="title">
           <h1>Project List</h1>
         </div>
-        <table>
+        <table className='body-projectlist'>
           <thead>
             <tr>
               <th>Name</th>

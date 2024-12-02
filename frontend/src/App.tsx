@@ -8,7 +8,7 @@ import Projectlist from "./pages/Projectlist/Projectlist.tsx";
 import Createproject from "./pages/Createproject/Createproject.tsx";
 import Createtask from "./pages/Createtask/Createtask.tsx";
 import Wilderness from "./pages/Wilderness/Wilderness.tsx";
-import Createmerge from "./pages/Createmerge/Createmerge.tsx";
+import CreateMergePage from "./pages/Createmerge/Createmerge.tsx";
 import Lobby from "./pages/Lobby/Lobby.tsx";
 import DemoPage from "./pages/DemoPage/Demo.tsx";
 import MailPage from "./pages/MailPage/MailPage.tsx";
@@ -25,9 +25,9 @@ function App() {
           <Route path="/projects/list" element={<Projectlist />}></Route>
           <Route path="/projects/create" element={<Createproject />}></Route>
           <Route path="/task/create" element={<Createtask />}></Route>
-          <Route path="/tasks/create-mr" element={<Createmerge />}></Route>
+          {/* <Route path="/tasks/create-mr" element={<Createmerge />}></Route> */}
           <Route path="/project/create" element={<Createproject />}></Route>
-          <Route path="/merge/create" element={<Createmerge />}></Route>
+          <Route path="/mr/*" element={<CreateMergePage />}></Route>
           <Route path="/lobby/*" element={<Lobby />}></Route>
           <Route path="/mail/*" element={<MailPage />}></Route>
 

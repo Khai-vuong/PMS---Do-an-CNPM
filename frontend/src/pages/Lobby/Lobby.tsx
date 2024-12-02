@@ -1,6 +1,8 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState, } from 'react';
+import { Navigate, useSearchParams } from "react-router-dom";
+
+import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -14,7 +16,7 @@ import { LobbyTaskDTO, TaskDTO } from '../../DTOs/LobbyTask.dto';
 
 const Lobby: React.FC = () => {
 
-
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
     const [pid] = useState(searchParams.get("pid"));
@@ -58,16 +60,15 @@ const Lobby: React.FC = () => {
 
     const renderItem = (item: TaskDTO) => {
         return (
-            <div key={item.tid} className='taskItem-lobby' onClick={taskCLickHandling}>
-                {item.name}    {item.description}        {item.assignee}
+            <div key={item.tid} className='taskItem-lobby' onClick={() => taskClickHandling(item)}>
+                {item.name}            {item.description}                    {item.assignee}
             </div>
         );
     };
-    //Continue work here
-    const taskCLickHandling = () => { };
-
-    const keySelector = (item: TaskDTO) => {
-        return item.tid;
+    const taskClickHandling = (item: TaskDTO): any => {
+        const url = `/mr/?pid=${pid}&tid=${item.tid}`;
+        // alert(url);
+        navigate(url);
     };
 
     const pullAllCode = () => {
@@ -97,17 +98,18 @@ const Lobby: React.FC = () => {
                                 <Pmconsole pid={pid || ''} />
                             </div>
                         )}
-                        <div className="filezone-lobby">
-                            <h1>filezone</h1>
-                            <button onClick={pullAllCode}>Pull the code</button>
-                        </div>
+
                         <div className="tasklist-lobby">
                             <h1>tasklist</h1>
                             <Pagination ListDTO={taskData || { data: [], metadata: { pageCount: 0, pageSize: 0, currentPage: 0, hasPreviousPage: false, hasNextPage: false } }}
                                 fetchPage={fetchPage}
                                 renderItem={renderItem}
                             />
+                        </div>
 
+                        <div className="filezone-lobby">
+                            <h1>filezone</h1>
+                            <button onClick={pullAllCode}>Pull the code</button>
                         </div>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ export class CreateTaskDto {
     @IsString()
     comment: string;
 
+    @IsOptional()
     @IsDate()
-    due: Date;
+    due?: Date;
 }

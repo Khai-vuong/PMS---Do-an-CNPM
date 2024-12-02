@@ -12,8 +12,15 @@ const CreateTask: React.FC = () => {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(() => {
+    const now = new Date();
+    now.setDate(now.getDate() + 7);
+    return now.toISOString().split("T")[0];
+  });   //Default due date is 7 days from now
+
   const [error, setError] = useState<string | null>(null);
+
+  const [pid, setPid] = useState(searchParams.get("pid"));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +41,7 @@ const CreateTask: React.FC = () => {
       return;
     }
 
+
     const taskData = {
       name: taskName,
       description: description,
@@ -41,6 +49,11 @@ const CreateTask: React.FC = () => {
       assignee: assignee,
       due: dueDate,
     };
+
+    taskData.due = new Date(dueDate).toISOString();
+
+    alert(JSON.stringify(taskData));
+
 
     try {
       const response = await axios.post(url, taskData, {
@@ -65,10 +78,18 @@ const CreateTask: React.FC = () => {
     }
   };
 
+  const gotoLobby = () => {
+    window.location.href = `/lobby?pid=${pid}`;
+  };
+
   return (
     <>
       <Header />
       <div className="create-task-page">
+
+        <button className="back-btn " onClick={gotoLobby}>
+          Back to Lobby
+        </button>
 
         <h2>Create Task Page</h2>
 
@@ -96,7 +117,7 @@ const CreateTask: React.FC = () => {
             placeholder="Enter assignee name"
           />
 
-          <label>Due date (Optional)</label>
+          <label>Due date</label>
           <input
             type="date"
             value={dueDate}
