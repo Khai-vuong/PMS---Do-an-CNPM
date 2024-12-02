@@ -76,10 +76,43 @@ const Lobby: React.FC = () => {
 
             alert('Pulling code is in progress');
 
-            await axios.get(`http://localhost:4000/file/downloadFromProject?pid=${pid}`)
-                .then(response => {
-                    alert('Pulling code is done');
-                })
+            try {
+                // Confirm the action with the user
+                const userConfirmed = window.confirm('This will download all files from this project. Are you sure?');
+                if (!userConfirmed) {
+                    alert('Download canceled');
+                    return;
+                }
+
+                // Notify the user that the download is in progress
+                alert('Preparing your files for download...');
+
+                // Make a GET request to the backend API
+                const response = await axios.get(`http://localhost:4000/file/downloadFromProject?pid=${pid}`, {
+                    responseType: 'blob', // Ensures the response is handled as a binary Blob
+                });
+
+                // Create a Blob URL from the response data
+                const blob = new Blob([response.data], { type: 'application/zip' });
+                const url = window.URL.createObjectURL(blob);
+
+                // Create a temporary download link
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `project_${pid}.zip`); // Default file name
+                document.body.appendChild(link);
+                link.click();
+
+                // Clean up: Remove the link and revoke the Blob URL
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
+                // Notify the user of success
+                alert('Download complete!');
+            } catch (error) {
+                console.error('Error downloading file:', error);
+                alert('There was an error while downloading the file.');
+            }
 
         }
         else {
