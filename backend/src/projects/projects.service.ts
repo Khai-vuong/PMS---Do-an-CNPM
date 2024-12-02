@@ -77,12 +77,24 @@ export class ProjectsService {
             },
         });
 
-        const projectsInfo: ProjectsListDto[] = listProjects.map(project => {
-            const { name, model, phase, manager_ids, pid } = project;
-            const role = manager_ids.some(manager => manager.uid === userID) ? 'Project manager' : (manager_ids.some(members => members.uid === userID) ? 'Member' : null);
+        const projectsInfo: ProjectsListDto[] = listProjects
+          .map(project => {
+            const { name, model, phase, manager_ids, members, pid } = project;
+            const role = manager_ids.some(manager => manager.uid === userID)
+              ? 'Project manager'
+              : members.some(member => member.uid === userID)
+                ? 'Member'
+                : null;
 
-            return role ? { name, model, phase, role, pid } as ProjectsListDto : null;
-        }).filter((project): project is ProjectsListDto => project !== null);
+            return role
+              ? ({ name, model, phase, role, pid } as ProjectsListDto)
+              : null;
+          })
+          .filter((project): project is ProjectsListDto => project !== null);
+
+        if (projectsInfo.length === 1) {
+          return projectsInfo[0];
+        }
 
         return projectsInfo;
     }
