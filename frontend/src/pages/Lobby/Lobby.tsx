@@ -72,20 +72,38 @@ const Lobby: React.FC = () => {
     };
 
     const pullAllCode = async () => {
-        if (confirm('This will pull all files from this project, are you sure?')) {
+      if (
+        confirm("This will pull all files from this project, are you sure?")
+      ) {
+        alert("Pulling code is in progress");
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/file/downloadFromProject?pid=${pid}`,
+            { responseType: "blob" }
+          );
 
-            alert('Pulling code is in progress');
+          const blob = new Blob([response.data], { type: "application/zip" });
+          const url = window.URL.createObjectURL(blob);
 
-            await axios.get(`http://localhost:4000/file/downloadFromProject?pid=${pid}`)
-                .then(response => {
-                    alert('Pulling code is done');
-                })
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", `project_${pid}.zip`);
+          document.body.appendChild(link);
+          link.click();
 
+          link.remove();
+          window.URL.revokeObjectURL(url);
+
+          alert("Pulling code is done");
+        } catch (error) {
+          console.error("Error while downloading the file:", error);
+          alert("Failed to pull code.");
         }
-        else {
-            alert('Pulling code is canceled');
-        }
+      } else {
+        alert("Pulling code is canceled");
+      }
     };
+    
 
     return (
         <>
