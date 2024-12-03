@@ -71,52 +71,85 @@ const Lobby: React.FC = () => {
         navigate(url);
     };
 
+    // const pullAllCode = async () => {
+    //     if (confirm('This will pull all files from this project, are you sure?')) {
+
+    //         alert('Pulling code is in progress');
+
+    //         try {
+    //             // Confirm the action with the user
+    //             const userConfirmed = window.confirm('This will download all files from this project. Are you sure?');
+    //             if (!userConfirmed) {
+    //                 alert('Download canceled');
+    //                 return;
+    //             }
+
+    //             // Notify the user that the download is in progress
+    //             alert('Preparing your files for download...');
+
+    //             // Make a GET request to the backend API
+    //             const response = await axios.get(`http://localhost:4000/file/downloadFromProject?pid=${pid}`, {
+    //                 responseType: 'blob', // Ensures the response is handled as a binary Blob
+    //             });
+
+    //             // Create a Blob URL from the response data
+    //             const blob = new Blob([response.data], { type: 'application/zip' });
+    //             const url = window.URL.createObjectURL(blob);
+
+    //             // Create a temporary download link
+    //             const link = document.createElement('a');
+    //             link.href = url;
+    //             link.setAttribute('download', `project_${pid}.zip`); // Default file name
+    //             document.body.appendChild(link);
+    //             link.click();
+
+    //             // Clean up: Remove the link and revoke the Blob URL
+    //             link.remove();
+    //             window.URL.revokeObjectURL(url);
+
+    //             // Notify the user of success
+    //             alert('Download complete!');
+    //         } catch (error) {
+    //             console.error('Error downloading file:', error);
+    //             alert('There was an error while downloading the file.');
+    //         }
+
+    //     }
+    //     else {
+    //         alert('Pulling code is canceled');
+    //     }
+    // };
+
     const pullAllCode = async () => {
-        if (confirm('This will pull all files from this project, are you sure?')) {
-
-            alert('Pulling code is in progress');
-
+        if (
+            confirm("This will pull all files from this project, are you sure?")
+        ) {
+            alert("Pulling code is in progress");
             try {
-                // Confirm the action with the user
-                const userConfirmed = window.confirm('This will download all files from this project. Are you sure?');
-                if (!userConfirmed) {
-                    alert('Download canceled');
-                    return;
-                }
+                const response = await axios.get(
+                    `http://localhost:4000/file/downloadFromProject?pid=${pid}`,
+                    { responseType: "blob" }
+                );
 
-                // Notify the user that the download is in progress
-                alert('Preparing your files for download...');
-
-                // Make a GET request to the backend API
-                const response = await axios.get(`http://localhost:4000/file/downloadFromProject?pid=${pid}`, {
-                    responseType: 'blob', // Ensures the response is handled as a binary Blob
-                });
-
-                // Create a Blob URL from the response data
-                const blob = new Blob([response.data], { type: 'application/zip' });
+                const blob = new Blob([response.data], { type: "application/zip" });
                 const url = window.URL.createObjectURL(blob);
 
-                // Create a temporary download link
-                const link = document.createElement('a');
+                const link = document.createElement("a");
                 link.href = url;
-                link.setAttribute('download', `project_${pid}.zip`); // Default file name
+                link.setAttribute("download", `project_${pid}.zip`);
                 document.body.appendChild(link);
                 link.click();
 
-                // Clean up: Remove the link and revoke the Blob URL
                 link.remove();
                 window.URL.revokeObjectURL(url);
 
-                // Notify the user of success
-                alert('Download complete!');
+                alert("Pulling code is done");
             } catch (error) {
-                console.error('Error downloading file:', error);
-                alert('There was an error while downloading the file.');
+                console.error("Error while downloading the file:", error);
+                alert("Failed to pull code.");
             }
-
-        }
-        else {
-            alert('Pulling code is canceled');
+        } else {
+            alert("Pulling code is canceled");
         }
     };
 

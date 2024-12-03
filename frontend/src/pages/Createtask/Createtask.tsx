@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 
 import axios from "axios";
@@ -19,8 +19,10 @@ const CreateTask: React.FC = () => {
   });   //Default due date is 7 days from now
 
   const [error, setError] = useState<string | null>(null);
+  const rootURL = "http://localhost:4000";
 
   const [pid, setPid] = useState(searchParams.get("pid"));
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +70,7 @@ const CreateTask: React.FC = () => {
 
       console.log("Task created successfully:", response.data);
       alert("Task created successfully!");
+      navigate(rootURL + `/lobby?pid=${pid}`);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data.message || "An error occurred");
