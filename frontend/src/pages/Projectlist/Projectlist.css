@@ -26,7 +26,7 @@
     overflow: hidden; 
 }
 .body-projectlist thead {
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
 }
 .body-projectlist th,
 .body-projectlist td {
@@ -49,19 +49,27 @@
   text-align: right;
 }
 
-.create-button a {
+.create-button  {
     margin-left: 680px;
     margin-top: 10px;
     display: inline-block;
     padding: 10px 10px; /* Tùy chỉnh khoảng cách bên trong */
-    border: 2px solid #000; /* Đường viền 2px màu đen */
     border-radius: 5px; /* Góc bo tròn */
     color: #000; /* Màu chữ */
     font-weight: bold; /* Chữ đậm */
     background-color: #f9f9f9; /* Màu nền */
     transition: background-color 0.3s ease; /* Hiệu ứng khi hover */
+    cursor: pointer;
 }
 
-.create-button a:hover {
+.create-button:hover {
     background-color: #e0e0e0; /* Đổi màu nền khi hover */
+}
+.body-projectlist tbody tr {
+    cursor: pointer; /* Hiển thị con trỏ khi di chuột vào hàng */
+    transition: background-color 0.3s ease; /* Hiệu ứng mượt khi hover */
+}
+
+.body-projectlist tbody tr:hover {
+    background-color: #f0f0f0; /* Thay đổi màu nền khi hover */
 }

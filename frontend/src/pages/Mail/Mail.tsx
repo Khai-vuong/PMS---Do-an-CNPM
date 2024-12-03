@@ -8,7 +8,7 @@ import Header from "../../components/Header/Header";
 
 const Mail: React.FC = () => {
   const [mails, setMails] = useState<MailDto[]>([]);
-
+  const [username, setUsername] = useState("User Name");
   useEffect(() => {
     const mockMails: MailDto[] = [
       {
@@ -29,20 +29,9 @@ const Mail: React.FC = () => {
     setMails(mockMails);
   }, []);
 
-  // useEffect(() => {
-  //   axios
-  //     .get("/mails/init")
-  //     .then((response) => {
-  //       setMails(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Lỗi khi lấy dữ liệu:", error);
-  //     });
-  // }, []);
-
   return (
     <>
-      <Header inforName="Dương Trọng Khôi" />
+      <Header inforName={username} />
       <div className="mail-container">
 
         {mails.length === 0 ? (

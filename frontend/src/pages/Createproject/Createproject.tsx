@@ -10,6 +10,7 @@ const CreateProject: React.FC = () => {
   const [modelImage, setModelImage] = useState(
     "/src/pages/Createproject/waterfall.png"
   );
+  const [username, setUsername] = useState("User Name");
   const [error, setError] = useState<string | null>(null);
 
   const token = localStorage.getItem("token") || "";
@@ -50,7 +51,15 @@ const CreateProject: React.FC = () => {
       console.error("Error:", err);
     }
   };
-
+  const initUsername = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/utils/username");
+      alert(response.data);
+      setUsername(response.data);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  };
   const handleModelChange = (selectedModel: string) => {
     setModel(selectedModel);
     setModelImage(
@@ -69,7 +78,7 @@ const CreateProject: React.FC = () => {
   return (
 
 <>
-    <Header inforName="Dương Trọng Khôi" />
+    <Header inforName={username} />
     <div className="create-project-page">
       <h2>Create Project Page</h2>
 

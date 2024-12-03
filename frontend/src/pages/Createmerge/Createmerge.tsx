@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const CreateMergePage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
+  const [username, setUsername] = useState("User Name");
   const [taskName, setTaskName] = useState("");
   const [comment, setComment] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -68,10 +68,18 @@ const CreateMergePage: React.FC = () => {
       console.error("Error:", err);
     }
   };
-
+  const initUsername = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/utils/username");
+      alert(response.data);
+      setUsername(response.data);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  };
   return (
     <>
-      <Header inforName="Dương Trọng Khôi" />
+      <Header inforName={username} />
       <div className="createmerge-container">
         <header className="createmerge-header">
           <img src="path_to_logo" alt="logo" className="logo" />
