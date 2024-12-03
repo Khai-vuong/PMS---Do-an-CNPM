@@ -17,7 +17,7 @@ const CreateTask: React.FC = () => {
     now.setDate(now.getDate() + 7);
     return now.toISOString().split("T")[0];
   });   //Default due date is 7 days from now
-
+  const [username, setUsername] = useState("User Name");
   const [error, setError] = useState<string | null>(null);
 
   const [pid, setPid] = useState(searchParams.get("pid"));
@@ -77,14 +77,22 @@ const CreateTask: React.FC = () => {
       console.error("Error:", err);
     }
   };
-
+  const initUsername = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/utils/username");
+      alert(response.data);
+      setUsername(response.data);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  };
   const gotoLobby = () => {
     window.location.href = `/lobby?pid=${pid}`;
   };
 
   return (
     <>
-      <Header />
+      <Header inforName={username} />
       <div className="create-task-page">
 
         <button className="back-btn " onClick={gotoLobby}>
