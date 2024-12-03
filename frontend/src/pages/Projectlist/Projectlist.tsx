@@ -20,7 +20,7 @@ axios.interceptors.request.use(
 
 const Projectlist = () => {
   const [projects, setProjects] = useState<ProjectsListDto[]>([]);
-
+  const [username, setUsername] = useState("User Name");
   const navigate = useNavigate();
 
   const toLobby = (pid: string): void => {
@@ -44,10 +44,23 @@ const Projectlist = () => {
       toLobby(id);
     }
   };
+  const routeToCreateProject = () => {
+    navigate("/project/create", { replace: true });
+  };
+
+  const initUsername = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/utils/username");
+      alert(response.data);
+      setUsername(response.data);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  }
 
   return (
     <>
-      <Header inforName="Dương Trọng Khôi" />
+      <Header inforName={username} />
       <div className="container-list">
         <div className="title">
           <h1>Project List</h1>
@@ -82,7 +95,7 @@ const Projectlist = () => {
         </table>
 
         <div className="create-button">
-          <a href="">Create Project</a>
+          <div onClick={routeToCreateProject}>Create Project</div>
         </div>
       </div>
     </>
