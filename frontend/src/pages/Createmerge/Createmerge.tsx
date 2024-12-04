@@ -9,11 +9,19 @@ import { useNavigate } from "react-router-dom";
 const CreateMergePage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+<<<<<<< Updated upstream
   const [username, setUsername] = useState("User Name");
+=======
+  const rootUrl = "http://localhost:4000";
+
+>>>>>>> Stashed changes
   const [taskName, setTaskName] = useState("");
   const [comment, setComment] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  const tid = searchParams.get('tid');
+  const pid = searchParams.get('pid');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -25,7 +33,6 @@ const CreateMergePage: React.FC = () => {
     e.preventDefault();
 
     const token = localStorage.getItem("token") || "";
-    const tid = searchParams.get('tid');
     const url = `http://localhost:4000/mr/create?tid=${tid}`;
 
     if (!token) {
@@ -33,7 +40,38 @@ const CreateMergePage: React.FC = () => {
       return;
     }
 
+    //Upload the file
+    if (files.length > 0) {
+      if (files.length > 1) { alert("This app version can only upload 1 file, the first file chosen will be uploaded. Sorry :<"); }
 
+      const fileUploadUrl = rootUrl + "/file/upload";
+      const fileFormData = new FormData();
+      const selectedFile = files[0];
+
+      fileFormData.append("task_id", tid || "");
+      fileFormData.append("project_id", pid || '');
+      fileFormData.append("file", selectedFile);
+
+      try {
+        const fileUploadResponse = await axios.post(fileUploadUrl, fileFormData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log("File upload success:", fileUploadResponse.data);
+      } catch (fileUploadError) {
+        if (axios.isAxiosError(fileUploadError)) {
+          setError(fileUploadError.response?.data.message || "File upload error occurred");
+        } else {
+          setError("An unexpected file upload error occurred.");
+        }
+        console.error("File upload error:", fileUploadError);
+        return;
+      }
+    }
+
+    //Create a MR
     const formData = new FormData();
     formData.append("taskName", taskName);
     formData.append("comment", comment);
@@ -43,7 +81,6 @@ const CreateMergePage: React.FC = () => {
 
 
     try {
-      // console.log("form data: " + JSON.stringify(formData));
 
       console.log("FormData content:");
       for (let [key, value] of formData.entries()) {
