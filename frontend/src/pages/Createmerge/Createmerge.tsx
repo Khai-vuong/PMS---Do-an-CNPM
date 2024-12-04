@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Createamerge.css";
 import Header from "../../components/Header/Header";
@@ -9,12 +9,10 @@ import { useNavigate } from "react-router-dom";
 const CreateMergePage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-<<<<<<< Updated upstream
   const [username, setUsername] = useState("User Name");
-=======
   const rootUrl = "http://localhost:4000";
 
->>>>>>> Stashed changes
+
   const [taskName, setTaskName] = useState("");
   const [comment, setComment] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -32,6 +30,8 @@ const CreateMergePage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    let mrid = '';
+
     const token = localStorage.getItem("token") || "";
     const url = `http://localhost:4000/mr/create?tid=${tid}`;
 
@@ -39,6 +39,40 @@ const CreateMergePage: React.FC = () => {
       alert("You must be logged in to submit the request.");
       return;
     }
+
+    //Create a Merge Request
+    const formData = new FormData();
+    formData.append("taskName", taskName);
+    formData.append("comment", comment);
+    files.forEach((file, index) => {
+      formData.append(`file${index}`, file);
+    });
+
+    try {
+      console.log("FormData content:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const response = await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Success:", response.data);
+      mrid = response.data.message.split(" ")[2];
+
+      alert("Merge request submitted successfully!");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.message || "An error occurred");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+      console.error("Error:", err);
+    }
+
 
     //Upload the file
     if (files.length > 0) {
@@ -71,49 +105,34 @@ const CreateMergePage: React.FC = () => {
       }
     }
 
-    //Create a MR
-    const formData = new FormData();
-    formData.append("taskName", taskName);
-    formData.append("comment", comment);
-    files.forEach((file, index) => {
-      formData.append(`file${index}`, file);
-    });
-
-
+    //Announce the merge request
+    const announceUrl = rootUrl + `/mail/send-mr-to-pm?tid=${tid}&pid=${pid}&mrid=${mrid}`;
     try {
-
-      console.log("FormData content:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-
-
-      const response = await axios.post(url, formData, {
+      const announceResponse = await axios.post(announceUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      console.log("Success:", response.data);
-      alert("Merge request submitted successfully!");
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data.message || "An error occurred");
-      } else {
-        setError("An unexpected error occurred.");
-      }
-      console.error("Error:", err);
+      console.log('Announce success:', announceResponse.data);
+    } catch (announceError) {
+      console.error("Error announcing merge request:", announceError);
     }
   };
+
   const initUsername = async () => {
     try {
       const response = await axios.get("http://localhost:4000/utils/username");
-      alert(response.data);
       setUsername(response.data);
     } catch (error) {
       console.error("Error fetching username:", error);
     }
   };
+
+  useEffect(() => {
+    initUsername();
+  }, []);
+
   return (
     <>
       <Header inforName={username} />
