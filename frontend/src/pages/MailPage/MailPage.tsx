@@ -3,6 +3,8 @@ import axios from "axios";
 import Header from "../../components/Header/Header";
 import Pagination from "../../components/Pagination";
 import "./MailPage.css";
+import MRbuttons from "../../components/MR-buttons/MRbuttons";
+import '../../components/MR-buttons/MRbuttons.css';
 
 interface MailDTO {
   mid: string;
@@ -46,7 +48,6 @@ const MailPage: React.FC = () => {
   const initUsername = async () => {
     try {
       const response = await axios.get("http://localhost:4000/utils/username");
-      alert(response.data);
       setUsername(response.data);
     } catch (error) {
       console.error("Error fetching username:", error);
@@ -76,15 +77,19 @@ const MailPage: React.FC = () => {
   const renderItem = (mail: MailDTO) => {
     return (
       <div key={mail.mid} className="mail-item">
-        <h3>{mail.category}</h3>
-        <p>{mail.content}</p>
-        <p>Task ID: {mail.tid}</p>
-        <p>Merge Request ID: {mail.mrid}</p>
+
+        <div className="category">{mail.category}</div>
+        <div className="content">{mail.content}</div>
+        <div className="buttons">
+          {mail.category === "MergeRequest" ? (
+            <MRbuttons tid={mail.tid} mrid={mail.mrid} />
+          ) : 'false'}
+        </div>
+
       </div>
     );
   };
 
-  const keySelector = (mail: MailDTO) => mail.mid;
 
   return (
     <div className="mail-page">

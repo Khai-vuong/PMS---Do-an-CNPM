@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Createamerge.css";
 import Header from "../../components/Header/Header";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
 
 const CreateMergePage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -17,8 +16,8 @@ const CreateMergePage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const tid = searchParams.get('tid');
-  const pid = searchParams.get('pid');
+  const tid = searchParams.get("tid");
+  const pid = searchParams.get("pid");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -29,6 +28,8 @@ const CreateMergePage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    let mrid = "";
+
     const token = localStorage.getItem("token") || "";
     const url = `http://localhost:4000/mr/create?tid=${tid}`;
 
@@ -37,38 +38,7 @@ const CreateMergePage: React.FC = () => {
       return;
     }
 
-    //Upload the file
-    if (files.length > 0) {
-      if (files.length > 1) { alert("This app version can only upload 1 file, the first file chosen will be uploaded. Sorry :<"); }
-
-      const fileUploadUrl = rootUrl + "/file/upload";
-      const fileFormData = new FormData();
-      const selectedFile = files[0];
-
-      fileFormData.append("task_id", tid || "");
-      fileFormData.append("project_id", pid || '');
-      fileFormData.append("file", selectedFile);
-
-      try {
-        const fileUploadResponse = await axios.post(fileUploadUrl, fileFormData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("File upload success:", fileUploadResponse.data);
-      } catch (fileUploadError) {
-        if (axios.isAxiosError(fileUploadError)) {
-          setError(fileUploadError.response?.data.message || "File upload error occurred");
-        } else {
-          setError("An unexpected file upload error occurred.");
-        }
-        console.error("File upload error:", fileUploadError);
-        return;
-      }
-    }
-
-    //Create a MR
+    //Create a Merge Request
     const formData = new FormData();
     formData.append("taskName", taskName);
     formData.append("comment", comment);
@@ -76,14 +46,11 @@ const CreateMergePage: React.FC = () => {
       formData.append(`file${index}`, file);
     });
 
-
     try {
-
       console.log("FormData content:");
       for (let [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
-
 
       const response = await axios.post(url, formData, {
         headers: {
@@ -92,6 +59,8 @@ const CreateMergePage: React.FC = () => {
       });
 
       console.log("Success:", response.data);
+      mrid = response.data.message.split(" ")[2];
+
       alert("Merge request submitted successfully!");
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -101,16 +70,78 @@ const CreateMergePage: React.FC = () => {
       }
       console.error("Error:", err);
     }
+
+    //Upload the file
+    if (files.length > 0) {
+      if (files.length > 1) {
+        alert(
+          "This app version can only upload 1 file, the first file chosen will be uploaded. Sorry :<"
+        );
+      }
+
+      const fileUploadUrl = rootUrl + "/file/upload";
+      const fileFormData = new FormData();
+      const selectedFile = files[0];
+
+      fileFormData.append("task_id", tid || "");
+      fileFormData.append("project_id", pid || "");
+      fileFormData.append("file", selectedFile);
+
+      try {
+        const fileUploadResponse = await axios.post(
+          fileUploadUrl,
+          fileFormData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("File upload success:", fileUploadResponse.data);
+      } catch (fileUploadError) {
+        if (axios.isAxiosError(fileUploadError)) {
+          setError(
+            fileUploadError.response?.data.message ||
+              "File upload error occurred"
+          );
+        } else {
+          setError("An unexpected file upload error occurred.");
+        }
+        console.error("File upload error:", fileUploadError);
+        return;
+      }
+    }
+
+    //Announce the merge request
+    const announceUrl =
+      rootUrl + `/mail/send-mr-to-pm?tid=${tid}&pid=${pid}&mrid=${mrid}`;
+    try {
+      const announceResponse = await axios.post(announceUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Announce success:", announceResponse.data);
+    } catch (announceError) {
+      console.error("Error announcing merge request:", announceError);
+    }
   };
+
   const initUsername = async () => {
     try {
       const response = await axios.get("http://localhost:4000/utils/username");
-      alert(response.data);
       setUsername(response.data);
     } catch (error) {
       console.error("Error fetching username:", error);
     }
   };
+
+  useEffect(() => {
+    initUsername();
+  }, []);
+
   return (
     <>
       <Header inforName={username} />
