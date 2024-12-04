@@ -9,12 +9,9 @@ import { useNavigate } from "react-router-dom";
 const CreateMergePage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-<<<<<<< Updated upstream
   const [username, setUsername] = useState("User Name");
-=======
   const rootUrl = "http://localhost:4000";
 
->>>>>>> Stashed changes
   const [taskName, setTaskName] = useState("");
   const [comment, setComment] = useState("");
   const [files, setFiles] = useState<File[]>([]);
