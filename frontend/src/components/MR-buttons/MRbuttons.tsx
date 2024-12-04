@@ -23,6 +23,22 @@ const MRbuttons: React.FC<MrbuttonsProps> = ({ tid, mrid }) => {
   const handleSearchClick = async () => {
     try {
       const response = await axios.get(rootUrl + `/file/downloadFromTask?tid=${tid}`);
+
+      const blob = new Blob([response.data], { type: "application/zip" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `task_${tid}.zip`);
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      alert("Pulling code is done");
+
+
       console.log("Response data:", response.data);
       alert("File loaded successfully!");
     } catch (error) {
