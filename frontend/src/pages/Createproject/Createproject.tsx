@@ -54,7 +54,6 @@ const CreateProject: React.FC = () => {
   const initUsername = async () => {
     try {
       const response = await axios.get("http://localhost:4000/utils/username");
-      alert(response.data);
       setUsername(response.data);
     } catch (error) {
       console.error("Error fetching username:", error);
@@ -70,6 +69,8 @@ const CreateProject: React.FC = () => {
   };
 
   useEffect(() => {
+    initUsername();
+
     if (!token) {
       alert("You are not logged in.");
     }
@@ -77,10 +78,10 @@ const CreateProject: React.FC = () => {
 
   return (
 
-<>
-    <Header inforName={username} />
-    <div className="create-project-page">
-      <h2>Create Project Page</h2>
+    <>
+      <Header inforName={username} />
+      <div className="create-project-page">
+        <h2>Create Project Page</h2>
 
         <form onSubmit={handleSubmit} className="project-form">
           <label>Project Name</label>

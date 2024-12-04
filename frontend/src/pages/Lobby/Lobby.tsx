@@ -15,35 +15,35 @@ import { LobbyProjectDTO } from "../../DTOs/LobbyProject.dto";
 import { LobbyTaskDTO, TaskDTO } from "../../DTOs/LobbyTask.dto";
 
 const Lobby: React.FC = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
-  const [pid] = useState(searchParams.get("pid"));
-  const [userData, setUserData] = useState<LobbyUserDTO | null>(null);
-  const [projectData, setProjectData] = useState<LobbyProjectDTO | null>(null);
-  const [taskData, setTaskData] = useState<LobbyTaskDTO<TaskDTO> | null>(null);
+    const [pid] = useState(searchParams.get("pid"));
+    const [userData, setUserData] = useState<LobbyUserDTO | null>(null);
+    const [projectData, setProjectData] = useState<LobbyProjectDTO | null>(null);
+    const [taskData, setTaskData] = useState<LobbyTaskDTO<TaskDTO> | null>(null);
 
-  //Get initial data
-  useEffect(() => {
-    axios
-      .get(`http://localhost:4000/lobby/init/?pid=${pid}`) // lobby/init Query pid
-      .then((response) => {
-        console.log(response.data);
+    //Get initial data
+    useEffect(() => {
+        axios
+            .get(`http://localhost:4000/lobby/init/?pid=${pid}`) // lobby/init Query pid
+            .then((response) => {
+                console.log(response.data);
 
-        const { username, role } = response.data;
-        setUserData({ username, role });
+                const { username, role } = response.data;
+                setUserData({ username, role });
 
-        const { pname, pdescription, pmodel, pphase } = response.data;
-        setProjectData({ pname, pdescription, pmodel, pphase });
+                const { pname, pdescription, pmodel, pphase } = response.data;
+                setProjectData({ pname, pdescription, pmodel, pphase });
 
-        //Continue work here
+                //Continue work here
 
-        setTaskData(response.data.PageDTO);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
-  }, []);
+                setTaskData(response.data.PageDTO);
+            })
+            .catch((error) => {
+                console.error("There was an error fetching the data!", error);
+            });
+    }, []);
 
     const renderItem = (item: TaskDTO) => {
         return (
@@ -93,18 +93,17 @@ const Lobby: React.FC = () => {
         }
     };
 
-  const fetchPage = async (currentPage: number) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/lobby/tasks/?pid=${pid}&page=${currentPage}&pageSize=5`
-      );
-      setTaskData(response.data);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
-  };
+    const fetchPage = async (currentPage: number) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:4000/lobby/tasks/?pid=${pid}&page=${currentPage}&pageSize=5`
+            );
+            setTaskData(response.data);
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
+        }
+    };
 
-  const renderItem = (item: TaskDTO) => {
     return (
         <>
             <div className="entire-lobby">
@@ -120,13 +119,17 @@ const Lobby: React.FC = () => {
                     <div className="maincontent-lobby">
 
                         {userData?.role === "Project Manager" && (
-                            <div className="pm-console-lobby">
-                                <Pmconsole pid={pid || ''} />
-                            </div>
+                            <>
+                                <div className="pm-console-lobby">
+                                    <h3>PM Console</h3>
+                                    <Pmconsole pid={pid || ''} />
+                                </div>
+                            </>
+
                         )}
 
                         <div className="tasklist-lobby">
-                            <h1>tasklist</h1>
+                            <h1>Tasklist</h1>
                             <Pagination ListDTO={taskData || { data: [], metadata: { pageCount: 0, pageSize: 0, currentPage: 0, hasPreviousPage: false, hasNextPage: false } }}
                                 fetchPage={fetchPage}
                                 renderItem={renderItem}
@@ -134,13 +137,14 @@ const Lobby: React.FC = () => {
                         </div>
 
                         <div className="filezone-lobby">
-                            <h1>filezone</h1>
+                            <h1>Filezone</h1>
                             <button onClick={pullAllCode}>Pull the code</button>
                         </div>
                     </div>
                 </div>
             </div>
         </>
-
+    );
+}
 
 export default Lobby;

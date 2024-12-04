@@ -51,12 +51,15 @@ const Projectlist = () => {
   const initUsername = async () => {
     try {
       const response = await axios.get("http://localhost:4000/utils/username");
-      alert(response.data);
       setUsername(response.data);
     } catch (error) {
       console.error("Error fetching username:", error);
     }
   }
+
+  useEffect(() => {
+    initUsername();
+  }, []);
 
   return (
     <>
@@ -78,12 +81,12 @@ const Projectlist = () => {
             {projects.length === 0 ? (
               <tr>
                 <td colSpan={4} style={{ textAlign: 'center' }}>
-                  Không có dự án nào
+                  Đang tìm dự án...
                 </td>
               </tr>
             ) : (
               projects.map((project) => (
-                <tr key={project.pid} onClick={() => handleProjectClick(project.pid)}>
+                <tr key={project.pid} onClick={() => handleProjectClick(project.pid)} className="projectItem-projectList">
                   <td>{project.name}</td>
                   <td>{project.role}</td>
                   <td>{project.model}</td>
