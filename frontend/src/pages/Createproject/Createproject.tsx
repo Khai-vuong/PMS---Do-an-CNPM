@@ -2,18 +2,25 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Createproject.css";
 import Header from "../../components/Header/Header";
+import { useNavigate } from "react-router-dom";
 
 const CreateProject: React.FC = () => {
   const [projectName, setProjectName] = useState("");
   const [model, setModel] = useState("Waterfall");
   const [description, setDescription] = useState("");
   const [modelImage, setModelImage] = useState(
+
     "/src/pages/Createproject/waterfall.png"
   );
+
+  const navigate = useNavigate();
+  const rootUrl = "http://localhost:4000";
   const [username, setUsername] = useState("User Name");
   const [error, setError] = useState<string | null>(null);
 
   const token = localStorage.getItem("token") || "";
+
+  const gotoProjectList = () => { navigate("/projects/list"); };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +48,8 @@ const CreateProject: React.FC = () => {
       });
 
       console.log("Project created successfully:", response.data);
+      gotoProjectList();
+
       alert("Project created successfully!");
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -81,6 +90,9 @@ const CreateProject: React.FC = () => {
     <>
       <Header inforName={username} />
       <div className="create-project-page">
+        <button className="projectList-back" onClick={gotoProjectList}>
+          Back
+        </button>
         <h2>Create Project Page</h2>
 
         <form onSubmit={handleSubmit} className="project-form">
@@ -93,6 +105,7 @@ const CreateProject: React.FC = () => {
           />
           <label>Model</label>
           <div className="model-options">
+
             <button
               type="button"
               onClick={() => handleModelChange("Waterfall")}

@@ -56,7 +56,7 @@ export class ProjectsController {
     async deleteProject(@GetUserID() user: any, @Param('pid') pid: string) {
         return this.projectsService.deleteProject(user.userID, pid);
     }
-    @UseGuards(IsManagerGuard)
+    // @UseGuards(IsManagerGuard)
     @Put('authorize')
     async authorizeMember(
         @GetUserID() user: any,
@@ -65,13 +65,12 @@ export class ProjectsController {
     ) {
         return this.projectsService.toggleMemberRole(user.userID, memberId, projectId);
     }
-    @UseGuards(IsManagerGuard)
-    @Put('NextPhase')
+    // @UseGuards(IsManagerGuard)
+    @Post('NextPhase')
     async switchPhase(
-        @GetUserID() user: any,
         @Query('pid') projectId: string
     ) {
-        return this.projectsService.switchProjectPhase(user.userID, projectId);
+        return this.projectsService.switchProjectPhase( projectId);
     }
     
 }

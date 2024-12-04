@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 
@@ -54,8 +54,6 @@ const CreateTask: React.FC = () => {
 
     taskData.due = new Date(dueDate).toISOString();
 
-    alert(JSON.stringify(taskData));
-
 
     try {
       const response = await axios.post(url, taskData, {
@@ -70,7 +68,7 @@ const CreateTask: React.FC = () => {
 
       console.log("Task created successfully:", response.data);
       alert("Task created successfully!");
-      navigate(rootURL + `/lobby?pid=${pid}`);
+      navigate(`/lobby?pid=${pid}`);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data.message || "An error occurred");
@@ -83,7 +81,6 @@ const CreateTask: React.FC = () => {
   const initUsername = async () => {
     try {
       const response = await axios.get("http://localhost:4000/utils/username");
-      alert(response.data);
       setUsername(response.data);
     } catch (error) {
       console.error("Error fetching username:", error);
@@ -92,6 +89,10 @@ const CreateTask: React.FC = () => {
   const gotoLobby = () => {
     window.location.href = `/lobby?pid=${pid}`;
   };
+
+  useEffect(() => {
+    initUsername();
+  }, []);
 
   return (
     <>

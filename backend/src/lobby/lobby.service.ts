@@ -24,7 +24,8 @@ export class LobbyService {
             throw new NotFoundException("Project not found");
         }
         if (!project.tasks.length) {
-            throw new NotFoundException("No task found");
+            // throw new NotFoundException("No task found in this project");
+            //Fix here. If there is no task, it should return an empty array instead of throwing an exception
         }
         return this.Pagination(project.tasks, page, pageSize);
     }
@@ -85,6 +86,8 @@ export class LobbyService {
 
         const role = await this.prisma.getUserRole(userID, pid) as 'Project Manager' | 'Member' | 'Guest';
         const data = new InitLobbyDTO(user.username, role, project.name, project.description, project.model, project.phase, await this.getTasks(pid, '1', '5', userID));
+        
+        console.log('return data'  + data);
         return data;
 
     }

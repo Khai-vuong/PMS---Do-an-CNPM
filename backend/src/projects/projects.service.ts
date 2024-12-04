@@ -205,7 +205,8 @@ export class ProjectsService {
     return 'Role updated';
   }
 
-  async switchProjectPhase(userID: string, projectId: string) {
+  async switchProjectPhase( projectId: string) {
+
     const project = await this.prisma.project.findUnique({
       where: { pid: projectId },
       include: { manager_ids: true },
@@ -215,15 +216,15 @@ export class ProjectsService {
       throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
     }
 
-    const isManager = project.manager_ids.some(
-      manager => manager.uid === userID,
-    );
-    if (!isManager) {
-      throw new HttpException(
-        'You are not authorized to switch phases',
-        HttpStatus.FORBIDDEN,
-      );
-    }
+      // const isManager = project.manager_ids.some(
+      //   manager => manager.uid === userID,
+      // );
+      // if (!isManager) {
+      //   throw new HttpException(
+      //     'You are not authorized to switch phases',
+      //     HttpStatus.FORBIDDEN,
+      //   );
+      // }
     const waterfallPhases = [
       'Initiation',
       'Planning',
@@ -241,7 +242,9 @@ export class ProjectsService {
     ];
 
     let nextPhase = '';
-    if (project.model === 'waterfall') {
+
+
+    if (project.model === 'Waterfall') {
       const currentPhaseIndex = waterfallPhases.indexOf(project.phase);
       if (
         currentPhaseIndex === -1 ||
@@ -252,15 +255,14 @@ export class ProjectsService {
         };
       }
       nextPhase = waterfallPhases[currentPhaseIndex + 1];
-    } else if (project.model === 'scrum') {
+    } 
+    else {  // All to scrum if not waterfall
       const currentPhaseIndex = scrumPhases.indexOf(project.phase);
       if (currentPhaseIndex === -1) {
         nextPhase = scrumPhases[0];
       }
       nextPhase = scrumPhases[currentPhaseIndex + 1];
-    } else {
-      throw new Error('Unknown project model.');
-    }
+    };
 
     await this.prisma.project.update({
       where: { pid: projectId },

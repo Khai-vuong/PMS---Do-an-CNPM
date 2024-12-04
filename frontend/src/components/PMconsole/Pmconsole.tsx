@@ -17,8 +17,10 @@ const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
   };
 
   const nextPhase = (): void => {
+    alert(pid);
+
     axios
-      .post(`http://localhost:4000/projects/next-phase`, { pid })
+      .post(`http://localhost:4000/projects/NextPhase/?pid=${pid}`)
       .then((response) => {
         console.log("Next phase successful:", response.data);
       })
@@ -54,4 +56,3 @@ const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
 };
 
 export default Pmconsole;
-    

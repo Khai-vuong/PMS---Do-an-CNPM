@@ -25,8 +25,15 @@ const CreateMergePage: React.FC = () => {
     }
   };
 
+  const gotoLobby = () => {
+    navigate(`/lobby/?pid=${pid}`);
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    alert('please wait, it may take a while');
 
     let mrid = "";
 
@@ -36,39 +43,6 @@ const CreateMergePage: React.FC = () => {
     if (!token) {
       alert("You must be logged in to submit the request.");
       return;
-    }
-
-    //Create a Merge Request
-    const formData = new FormData();
-    formData.append("taskName", taskName);
-    formData.append("comment", comment);
-    files.forEach((file, index) => {
-      formData.append(`file${index}`, file);
-    });
-
-    try {
-      console.log("FormData content:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-
-      const response = await axios.post(url, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("Success:", response.data);
-      mrid = response.data.message.split(" ")[2];
-
-      alert("Merge request submitted successfully!");
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data.message || "An error occurred");
-      } else {
-        setError("An unexpected error occurred.");
-      }
-      console.error("Error:", err);
     }
 
     //Upload the file
@@ -103,7 +77,7 @@ const CreateMergePage: React.FC = () => {
         if (axios.isAxiosError(fileUploadError)) {
           setError(
             fileUploadError.response?.data.message ||
-              "File upload error occurred"
+            "File upload error occurred"
           );
         } else {
           setError("An unexpected file upload error occurred.");
@@ -111,6 +85,42 @@ const CreateMergePage: React.FC = () => {
         console.error("File upload error:", fileUploadError);
         return;
       }
+    }
+
+
+    //Create a Merge Request
+    const formData = new FormData();
+    formData.append("taskName", taskName);
+    formData.append("comment", comment);
+    files.forEach((file, index) => {
+      formData.append(`file${index}`, file);
+    });
+
+    try {
+      console.log("FormData content:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const response = await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Success:", response.data);
+      mrid = response.data.message.split(" ")[2];
+
+      alert("Merge request submitted successfully!");
+      gotoLobby();
+
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.message || "An error occurred");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+      console.error("Error:", err);
     }
 
     //Announce the merge request
@@ -142,6 +152,25 @@ const CreateMergePage: React.FC = () => {
     initUsername();
   }, []);
 
+  useEffect(() => {
+    const fetchTaskName = async () => {
+      if (tid) {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/tasks/name/?tid=${tid}`
+          );
+          setTaskName(response.data.name);
+        } catch (err) {
+          setError("Failed to fetch task name.");
+        }
+      } else {
+        setError("Task ID (tid) is missing.");
+      }
+    };
+
+    fetchTaskName();
+  }, [tid]);
+
   return (
     <>
       <Header inforName={username} />
@@ -158,14 +187,16 @@ const CreateMergePage: React.FC = () => {
           </div>
         </header>
         <h1 className="createmerge-title">Create Merge Request</h1>
+        <button className="createmerge-back" onClick={gotoLobby}>Back to lobby</button>
         <form onSubmit={handleSubmit} className="createmerge-form">
           <label>Task name</label>
           <input
             type="text"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
-            className="input-field"
-            required
+            className="input-field not-allowed"
+            placeholder={taskName}
+            disabled
           />
 
           <label>Comment</label>

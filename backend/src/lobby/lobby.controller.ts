@@ -12,7 +12,11 @@ export class LobbyController {
     async initLobby(@Query('pid') pid: string, @GetUserID() user: any) {
         if (!pid) { throw new BadRequestException('Project ID is required'); }
 
-        return this.lobbyService.initLobby(pid, user.userID);
+        console.log(`${user.username} is initializing lobby for project ${pid}`);
+
+        const res = await this.lobbyService.initLobby(pid, user.userID);
+        console.log(res);
+        return res;
     }
 
     @UseGuards(LocalGuard)

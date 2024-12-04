@@ -10,26 +10,26 @@ import { LobbyProjectDTO } from "../../DTOs/LobbyProject.dto";
 import { LobbyTaskDTO, TaskDTO } from "../../DTOs/LobbyTask.dto";
 
 const Lobby: React.FC = () => {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-    const [pid] = useState(searchParams.get("pid"));
-    const [userData, setUserData] = useState<LobbyUserDTO | null>(null);
-    const [projectData, setProjectData] = useState<LobbyProjectDTO | null>(null);
-    const [taskData, setTaskData] = useState<LobbyTaskDTO<TaskDTO> | null>(null);
+  const [pid] = useState(searchParams.get("pid"));
+  const [userData, setUserData] = useState<LobbyUserDTO | null>(null);
+  const [projectData, setProjectData] = useState<LobbyProjectDTO | null>(null);
+  const [taskData, setTaskData] = useState<LobbyTaskDTO<TaskDTO> | null>(null);
 
-    //Get initial data
-    useEffect(() => {
-        axios
-            .get(`http://localhost:4000/lobby/init/?pid=${pid}`) // lobby/init Query pid
-            .then((response) => {
-                console.log(response.data);
+  //Get initial data
+  useEffect(() => {
+    axios
+      .get(`http://localhost:4000/lobby/init/?pid=${pid}`) // lobby/init Query pid
+      .then((response) => {
+        console.log(response.data);
 
-                const { username, role } = response.data;
-                setUserData({ username, role });
+        const { username, role } = response.data;
+        setUserData({ username, role });
 
-                const { pname, pdescription, pmodel, pphase } = response.data;
-                setProjectData({ pname, pdescription, pmodel, pphase });
+        const { pname, pdescription, pmodel, pphase } = response.data;
+        setProjectData({ pname, pdescription, pmodel, pphase });
 
 
         setTaskData(response.data.PageDTO);
@@ -37,7 +37,7 @@ const Lobby: React.FC = () => {
       .catch((error) => {
         console.error("There was an error fetching the data!", error);
       });
-  }, [pid]);
+  }, []);
 
   const renderItem = (item: TaskDTO) => (
     <div
@@ -87,16 +87,16 @@ const Lobby: React.FC = () => {
     }
   };
 
-    const fetchPage = async (currentPage: number) => {
-        try {
-            const response = await axios.get(
-                `http://localhost:4000/lobby/tasks/?pid=${pid}&page=${currentPage}&pageSize=5`
-            );
-            setTaskData(response.data);
-        } catch (error) {
-            console.error("Failed to fetch data:", error);
-        }
-    };
+  const fetchPage = async (currentPage: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/lobby/tasks/?pid=${pid}&page=${currentPage}&pageSize=5`
+      );
+      setTaskData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
 
   return (
     <div className="entire-lobby">
