@@ -5,21 +5,19 @@ import Header from "../../components/Header/Header";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-
 const CreateMergePage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [username, setUsername] = useState("User Name");
   const rootUrl = "http://localhost:4000";
 
-
   const [taskName, setTaskName] = useState("");
   const [comment, setComment] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const tid = searchParams.get('tid');
-  const pid = searchParams.get('pid');
+  const tid = searchParams.get("tid");
+  const pid = searchParams.get("pid");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -30,7 +28,7 @@ const CreateMergePage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    let mrid = '';
+    let mrid = "";
 
     const token = localStorage.getItem("token") || "";
     const url = `http://localhost:4000/mr/create?tid=${tid}`;
@@ -73,30 +71,40 @@ const CreateMergePage: React.FC = () => {
       console.error("Error:", err);
     }
 
-
     //Upload the file
     if (files.length > 0) {
-      if (files.length > 1) { alert("This app version can only upload 1 file, the first file chosen will be uploaded. Sorry :<"); }
+      if (files.length > 1) {
+        alert(
+          "This app version can only upload 1 file, the first file chosen will be uploaded. Sorry :<"
+        );
+      }
 
       const fileUploadUrl = rootUrl + "/file/upload";
       const fileFormData = new FormData();
       const selectedFile = files[0];
 
       fileFormData.append("task_id", tid || "");
-      fileFormData.append("project_id", pid || '');
+      fileFormData.append("project_id", pid || "");
       fileFormData.append("file", selectedFile);
 
       try {
-        const fileUploadResponse = await axios.post(fileUploadUrl, fileFormData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const fileUploadResponse = await axios.post(
+          fileUploadUrl,
+          fileFormData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         console.log("File upload success:", fileUploadResponse.data);
       } catch (fileUploadError) {
         if (axios.isAxiosError(fileUploadError)) {
-          setError(fileUploadError.response?.data.message || "File upload error occurred");
+          setError(
+            fileUploadError.response?.data.message ||
+              "File upload error occurred"
+          );
         } else {
           setError("An unexpected file upload error occurred.");
         }
@@ -106,7 +114,8 @@ const CreateMergePage: React.FC = () => {
     }
 
     //Announce the merge request
-    const announceUrl = rootUrl + `/mail/send-mr-to-pm?tid=${tid}&pid=${pid}&mrid=${mrid}`;
+    const announceUrl =
+      rootUrl + `/mail/send-mr-to-pm?tid=${tid}&pid=${pid}&mrid=${mrid}`;
     try {
       const announceResponse = await axios.post(announceUrl, {
         headers: {
@@ -114,7 +123,7 @@ const CreateMergePage: React.FC = () => {
         },
       });
 
-      console.log('Announce success:', announceResponse.data);
+      console.log("Announce success:", announceResponse.data);
     } catch (announceError) {
       console.error("Error announcing merge request:", announceError);
     }
