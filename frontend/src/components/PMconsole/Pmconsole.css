@@ -25,6 +25,10 @@ html, body {
     left: 20px;
 }
 
+.authorize:hover {
+    cursor: pointer;
+}
+
 /* Vị trí cho các nút bên phải */
 .right-buttons {
     position: absolute;
