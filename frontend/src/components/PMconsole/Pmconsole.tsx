@@ -11,6 +11,8 @@ interface HeaderProps {
 const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
   const [tasks, setTasks] = useState();
   const [displayMemberList, setDisplayMemberList] = useState(false);
+  const [selectedMember, setSelectedMember] = useState("");
+  const [members, setMembers] = useState([] as string[]);
 
 
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
     axios
       .post(`http://localhost:4000/projects/NextPhase/?pid=${pid}`)
       .then((response) => {
+        alert("Phase changed successfully, refresh the page to see changes");
         console.log("Next phase successful:", response.data);
       })
       .catch((error) => {
@@ -30,32 +33,73 @@ const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
       });
   };
 
-  const toggleMemberList = (): void => {
-    setDisplayMemberList(!displayMemberList);
-    if (displayMemberList == true) {
-      const members = getAllMember(pid);
+  //FOR AUTHORIZE
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedMember(selectedValue);
+
+    if (confirm(`Are you sure you want to authorize ${selectedValue}?`)) {
+      axios.put(`http://localhost:4000/projects/authorize/?member=${selectedValue}&pid=${pid}`)
+        .then(() => {
+          alert("Member authorized successfully, refresh the page to see changes");
+        })
+        .catch((error) => {
+          alert("Error authorizeing member: " + error);
+        });
     }
+
+    else {
+      alert("Authorization cancelled");
+    }
+    alert(`Selected Member: ${selectedValue}`);
+  };
+
+  const toggleMemberList = async () => {
+
   };
 
   const transformToArray = (input: any): string[] => {
     const managerList = input.manager.map((name: string) => `${name} - manager`);
     const memberList = input.member.map((name: string) => `${name} - member`);
+
     return [...managerList, ...memberList];
   };
 
-  const getAllMember = (pid: string): void => {
-    axios
-      .get(`http://localhost:4000/utils/member/?pid=${pid}`)
-      .then((response) => {
-        console.log("Members fetched successfully:", JSON.stringify(response.data));
+  const getAllMember = async (pid: string): Promise<string[]> => {
+    try {
+      const response = await axios.get(`http://localhost:4000/utils/member/?pid=${pid}`)
 
-        return transformToArray(response.data);
+      const list = transformToArray(response.data);
+      console.log("Members fetched successfully:", list);
 
+      setMembers(list);
+
+
+      return list; // Return the transformed array
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      return []; // Return an empty array if there's an error
+    }
+  };
+  // END AUTHORIZE
+
+  const inviteUser = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const name = (e.target as any).elements.name.value;
+    axios.post(`http://localhost:4000/projects/invite/?pid=${pid}&name=${name}`)
+      .then(() => {
+        alert(name + " was added to project");
       })
       .catch((error) => {
-        console.error("Error fetching members:", error);
+        alert("Error inviting member: " + error);
       });
-  };
+  }
+
+  useEffect(() => {
+    getAllMember(pid)
+  }, []);
+
 
 
   return (
@@ -63,9 +107,26 @@ const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
       <div className="pm-container">
         <div className="pm-buttons">
           <div className="authorize" onClick={toggleMemberList} >Authorize</div>
+          <select onChange={handleChange} value={selectedMember} className="authorize-select">
+            <option value="" disabled>
+              Choose a member
+            </option>
+            {members.map((member, index) => (
+              <option key={index} value={member}>
+                {member}
+              </option>
+            ))}
+          </select>
+
           <div className="right-buttons">
             <div className="pm-create" onClick={toCreateTask}>Create task</div>
             <div className="next-phase" onClick={nextPhase}>Next Phase</div>
+            <div className="invite">
+              <form onSubmit={inviteUser}>
+                <input type="text" name="name" placeholder="Enter name" required />
+                <button type="submit" className="invite-button">Invite</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

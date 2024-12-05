@@ -40,7 +40,7 @@ html, body {
 }
 
 /* Styling cho các nút bên trong .right-buttons */
-.pm-create, .next-phase {
+.pm-create, .next-phase, .invite-button {
     padding: 8px 15px;
     border-radius: 12px;
     background-color: rgb(145, 61, 210);
@@ -49,4 +49,8 @@ html, body {
     font-weight: bold;
     text-align: center;
     cursor: pointer;
+}
+
+.authorize-select {
+    display: flex;;
 }

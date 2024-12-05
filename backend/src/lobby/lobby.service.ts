@@ -23,9 +23,16 @@ export class LobbyService {
         if (!project) {
             throw new NotFoundException("Project not found");
         }
-        if (!project.tasks.length) {
-            // throw new NotFoundException("No task found in this project");
-            //Fix here. If there is no task, it should return an empty array instead of throwing an exception
+        if (project.tasks.length === 0) {
+            const pageMeta = {
+                pageCount: 0,
+                pageSize: 0,
+                currentPage: 0,
+                hasPreviousPage: false,
+                hasNextPage: false
+            };
+            const returnData = new PageDTO<TaskReturnDTO>([], pageMeta);
+            return returnData;
         }
         return this.Pagination(project.tasks, page, pageSize);
     }
@@ -43,9 +50,6 @@ export class LobbyService {
         }
         else {
             data = tasks.slice(start, end);
-        }
-        if (data.length === 0) {
-            throw new NotFoundException("No task found in this page");
         }
         const taskReturnData = await Promise.all(data.map(async (task) => {
             const assigneeUsername = await this.getUserName(task.assignee_id);

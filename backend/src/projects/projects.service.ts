@@ -274,7 +274,57 @@ export class ProjectsService {
     return 'Phase switched';
   }
 
+  async inviteMember(pid: string, memberName: string) {
+    const member = await this.prisma.user.findFirst({
+      where: { username: memberName },
+    });
 
+    if (!member) {
+      throw new HttpException('Member not found', HttpStatus.NOT_FOUND);
+    }
 
+    await this.prisma.user.update({
+      where: { uid: member.uid },
+      data: {
+        project_ids: {
+          connect: { pid },
+        },
+      },
+    });
+
+    
+
+    return `Member ${memberName} invited to project ${pid}`;
+
+    
+  }
+
+  // async sendAuthNotification (projectId: string, memberName: string, authorizer: string) {
+  //   const project = this.prisma.project.findUnique({
+  //     where: { pid: projectId },
+  //   });
+
+  //   const member = this.prisma.user.findFirst({
+  //     where: { username: memberName },
+  //   });
+
+  //   Promise.all([project, member])
+  //   .then(([project, member]) => {
+  //       const data = {
+  //         content: `${authorizer} has toggled your role in project ${project.name}`,
+  //         category: 'Authorization',
+  //         recipient: {connect: {uid: member.uid}}
+  //       },
+
+  //       await this.prisma.mail.create({
+  //         data: data,
+  //       });
+  //   }).catch((error) => {
+  //     console.error("Error in sending mail for authorize: " + error);
+  //   }
+
+  //   return `Authorization request sent to ${member.username} by ${authorizer}`;
+  // }
+    
 
 }

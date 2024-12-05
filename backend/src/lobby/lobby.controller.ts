@@ -13,7 +13,7 @@ export class LobbyController {
         if (!pid) { throw new BadRequestException('Project ID is required'); }
 
         const res = await this.lobbyService.initLobby(pid, user.userID);
-        console.log(res);
+        // console.log(res);
         return res;
     }
 

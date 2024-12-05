@@ -63,6 +63,13 @@ export class ProjectsController {
         @Query('member') memberId: string,
         @Query('pid') projectId: string
     ) {
+
+        console.log("Authorize member", memberId, "to project", projectId);
+        const memberName = ''; // await code.
+
+
+        // this.projectsService.sendAuthNotification(memberName, projectId, user.username);
+
         return this.projectsService.toggleMemberRole(user.userID, memberId, projectId);
     }
     // @UseGuards(IsManagerGuard)
@@ -71,6 +78,13 @@ export class ProjectsController {
         @Query('pid') projectId: string
     ) {
         return this.projectsService.switchProjectPhase( projectId);
+    }
+
+    @UseGuards(LocalGuard)
+    @Post('invite')
+    async  inviteMember( @Query('pid') pid: string, @Query('name') memberName: string) {
+
+        return this.projectsService.inviteMember(pid, memberName);
     }
     
 }
