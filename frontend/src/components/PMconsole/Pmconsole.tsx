@@ -8,8 +8,8 @@ interface HeaderProps {
 }
 
 const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
-  const [tasks, setTasks] = useState();
-  const [displayMemberList, setDisplayMemberList] = useState(false);
+  // const [tasks, setTasks] = useState();
+  // const [displayMemberList, setDisplayMemberList] = useState(false);
   const [selectedMember, setSelectedMember] = useState("");
   const [members, setMembers] = useState([] as string[]);
 
