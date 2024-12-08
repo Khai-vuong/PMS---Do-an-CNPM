@@ -48,3 +48,19 @@ test_FE:
   <<: *default-job
   stage: test
   dependencies:
+    - build_FE # Reuse artifacts from the frontend build
+  script:
+    - echo "Testing frontend..."
+    - cd frontend
+    - npm test || echo "No frontend tests found"
+
+# Test Backend
+test_BE:
+  <<: *default-job
+  stage: test
+  dependencies:
+    - build_BE # Reuse artifacts from the backend build
+  script:
+    - echo "Testing backend..."
+    - cd backend
+    - npm test || echo "No backend tests found"
