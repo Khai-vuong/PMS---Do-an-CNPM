@@ -148,62 +148,66 @@ export class ProjectsService {
     return projectInfo;
   }
 
-  async toggleMemberRole(userID: string, memberId: string, projectId: string) {
+  async toggleMemberRole(userID: string, memberName: string, projectId: string) {
     const project = await this.prisma.project.findUnique({
-      where: { pid: projectId },
-      include: { members: true, manager_ids: true },
+        where: { pid: projectId },
+        include: { members: true, manager_ids: true },
     });
 
     if (!project) {
-      throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
     }
-
+    const member = await this.prisma.user.findUnique({
+        where: { username: memberName },
+    });
+    if (!member) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    const memberId = member.uid;
     const isMember = project.members.some(member => member.uid === memberId);
-    const isManager = project.manager_ids.some(
-      manager => manager.uid === userID,
-    );
-    if (isMember) {
-      await this.prisma.project.update({
-        where: { pid: projectId },
-        data: {
-          members: {
-            disconnect: { uid: memberId },
-          },
-        },
-      });
-      await this.prisma.project.update({
-        where: { pid: projectId },
-        data: {
-          members: {
-            connect: { uid: memberId },
-          },
-        },
-      });
-    } else if (isManager) {
-      await this.prisma.project.update({
-        where: { pid: projectId },
-        data: {
-          manager_ids: {
-            disconnect: { uid: memberId },
-          },
-        },
-      });
-      await this.prisma.project.update({
-        where: { pid: projectId },
-        data: {
-          members: {
-            connect: { uid: memberId },
-          },
-        },
-      });
-    } else {
-      throw new HttpException(
-        'You are not authorized to update roles',
-        HttpStatus.FORBIDDEN,
-      );
+    const isManager = project.manager_ids.some(manager => manager.uid === memberId);
+    if (isMember){
+        await this.prisma.project.update({
+            where: { pid: projectId },
+            data: {
+                members: {
+                    disconnect: { uid: memberId },
+                },
+            },
+        });
+        await this.prisma.project.update({
+            where: { pid: projectId },
+            data: {
+                manager_ids: {
+                    connect: { uid: memberId },
+                },
+            },
+        });
     }
+    else if (isManager){
+        await this.prisma.project.update({
+            where: { pid: projectId },
+            data: {
+                manager_ids: {
+                    disconnect: { uid: memberId },
+                },
+            },
+        });
+        await this.prisma.project.update({
+            where: { pid: projectId },
+            data: {
+                members: {
+                    connect: { uid: memberId },
+                },
+            },
+        });
+    }
+    else {
+        throw new HttpException('You are not authorized to update roles', HttpStatus.FORBIDDEN);
+    }
+    await this.sendAuthNotification(userID, memberId, projectId);
     return 'Role updated';
-  }
+}
 
   async switchProjectPhase( projectId: string) {
 
@@ -216,15 +220,6 @@ export class ProjectsService {
       throw new HttpException('Project not found', HttpStatus.NOT_FOUND);
     }
 
-      // const isManager = project.manager_ids.some(
-      //   manager => manager.uid === userID,
-      // );
-      // if (!isManager) {
-      //   throw new HttpException(
-      //     'You are not authorized to switch phases',
-      //     HttpStatus.FORBIDDEN,
-      //   );
-      // }
     const waterfallPhases = [
       'Initiation',
       'Planning',
@@ -299,32 +294,21 @@ export class ProjectsService {
     
   }
 
-  // async sendAuthNotification (projectId: string, memberName: string, authorizer: string) {
-  //   const project = this.prisma.project.findUnique({
-  //     where: { pid: projectId },
-  //   });
 
-  //   const member = this.prisma.user.findFirst({
-  //     where: { username: memberName },
-  //   });
-
-  //   Promise.all([project, member])
-  //   .then(([project, member]) => {
-  //       const data = {
-  //         content: `${authorizer} has toggled your role in project ${project.name}`,
-  //         category: 'Authorization',
-  //         recipient: {connect: {uid: member.uid}}
-  //       },
-
-  //       await this.prisma.mail.create({
-  //         data: data,
-  //       });
-  //   }).catch((error) => {
-  //     console.error("Error in sending mail for authorize: " + error);
-  //   }
-
-  //   return `Authorization request sent to ${member.username} by ${authorizer}`;
-  // }
+  async sendAuthNotification(userID: string, memberId: string, projectId: string) {
+    await this.prisma.mail.create({
+        data: {
+            content: `${userID} has toggled your role in project ${projectId}`,
+            category: 'Authorization',
+            recipient: {
+                connect: { uid: memberId }
+            },
+            merge_request: {
+                connect: { mrid: "cefb8f" }   //Void merge request
+            }
+        }
+    });
+}
     
 
 }

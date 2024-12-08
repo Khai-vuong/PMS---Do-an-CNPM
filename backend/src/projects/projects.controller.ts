@@ -34,15 +34,6 @@ export class ProjectsController {
     }
 
     @UseGuards(LocalGuard)
-    @Put(':pid')
-    async updateProjectByPut(@GetUserID() user: any, @Param('pid') pid: string, @Body() input: any) {
-        // const { username, password, ...project } = input;
-        const updateProject: UpdateProjectDto = input;
-
-        return this.projectsService.updateProject(user.userID, pid, updateProject);
-    }
-
-    @UseGuards(LocalGuard)
     @Patch(':pid')
     async updateProjectByPatch(@GetUserID() user: any, @Param('pid') pid: string, @Body() input: any) {
         // const { username, password, ...project } = input;
@@ -57,22 +48,18 @@ export class ProjectsController {
         return this.projectsService.deleteProject(user.userID, pid);
     }
     // @UseGuards(IsManagerGuard)
+    @UseGuards(LocalGuard)
     @Put('authorize')
     async authorizeMember(
         @GetUserID() user: any,
-        @Query('member') memberId: string,
+        @Query('member') memberName: string,
         @Query('pid') projectId: string
     ) {
-
-        console.log("Authorize member", memberId, "to project", projectId);
-        const memberName = ''; // await code.
-
-
-        // this.projectsService.sendAuthNotification(memberName, projectId, user.username);
-
-        return this.projectsService.toggleMemberRole(user.userID, memberId, projectId);
+        console.log('authorizeMember: ', user, memberName, projectId);
+        return this.projectsService.toggleMemberRole(user.userID, memberName, projectId);
     }
     // @UseGuards(IsManagerGuard)
+    @UseGuards(LocalGuard)
     @Post('NextPhase')
     async switchPhase(
         @Query('pid') projectId: string

@@ -39,8 +39,14 @@ const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
     const selectedValue = event.target.value;
     setSelectedMember(selectedValue);
 
-    if (confirm(`Are you sure you want to authorize ${selectedValue}?`)) {
-      axios.put(`http://localhost:4000/projects/authorize/?member=${selectedValue}&pid=${pid}`)
+    alert(`Selected Member: ${selectedValue}`);
+  };
+
+  const toggleMemberList = async () => {
+    if (confirm(`Are you sure you want to authorize ${selectedMember}?`)) {
+      const [name] = selectedMember.split(" - ");
+
+      axios.put(`http://localhost:4000/projects/authorize/?member=${name}&pid=${pid}`)
         .then(() => {
           alert("Member authorized successfully, refresh the page to see changes");
         })
@@ -52,11 +58,6 @@ const Pmconsole: React.FC<HeaderProps> = ({ pid }) => {
     else {
       alert("Authorization cancelled");
     }
-    alert(`Selected Member: ${selectedValue}`);
-  };
-
-  const toggleMemberList = async () => {
-
   };
 
   const transformToArray = (input: any): string[] => {

@@ -31,12 +31,20 @@ const Lobby: React.FC = () => {
         const { pname, pdescription, pmodel, pphase } = response.data;
         setProjectData({ pname, pdescription, pmodel, pphase });
 
-
         setTaskData(response.data.PageDTO);
+
+        if (role === "Project Manager") {
+          document.querySelector(".body-lobby")?.classList.add("lobby-PM");
+        } else {
+          document.querySelector(".body-lobby")?.classList.add("lobby-member");
+        }
       })
       .catch((error) => {
         console.error("There was an error fetching the data!", error);
       });
+
+
+
   }, []);
 
   const renderItem = (item: TaskDTO) => (
@@ -58,7 +66,6 @@ const Lobby: React.FC = () => {
 
   const pullAllCode = async () => {
     if (confirm("This will pull all files from this project, are you sure?")) {
-      alert("Pulling code is in progress");
       try {
         const response = await axios.get(
           `http://localhost:4000/file/downloadFromProject?pid=${pid}`,
@@ -76,8 +83,6 @@ const Lobby: React.FC = () => {
 
         link.remove();
         window.URL.revokeObjectURL(url);
-
-        alert("Pulling code is done");
       } catch (error) {
         console.error("Error while downloading the file:", error);
         alert("Failed to pull code.");
