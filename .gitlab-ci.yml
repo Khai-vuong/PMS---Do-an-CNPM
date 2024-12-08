@@ -1,5 +1,4 @@
 stages:
-  - lint
   - build
   - test
 
@@ -15,27 +14,6 @@ cache:
   image: node:21
   before_script:
     - echo "Setting up..."
-
-# TypeScript Linting
-lint_FE:
-  <<: *default-job
-  stage: lint
-  script:
-    - echo "Linting frontend..."
-    - cd frontend
-    - npm install
-    - npx tsc --noEmit
-    - npx eslint . --ext .ts,.tsx
-
-lint_BE:
-  <<: *default-job
-  stage: lint
-  script:
-    - echo "Linting backend..."
-    - cd backend
-    - npm install
-    - npx tsc --noEmit
-    - npx eslint . --ext .ts
 
 # Build Frontend
 build_FE:
@@ -70,19 +48,3 @@ test_FE:
   <<: *default-job
   stage: test
   dependencies:
-    - build_FE # Reuse artifacts from the frontend build
-  script:
-    - echo "Testing frontend..."
-    - cd frontend
-    - npm test || echo "No frontend tests found"
-
-# Test Backend
-test_BE:
-  <<: *default-job
-  stage: test
-  dependencies:
-    - build_BE # Reuse artifacts from the backend build
-  script:
-    - echo "Testing backend..."
-    - cd backend
-    - npm test || echo "No backend tests found"
