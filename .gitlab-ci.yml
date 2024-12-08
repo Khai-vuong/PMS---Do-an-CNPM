@@ -3,6 +3,19 @@ stages:
   - build
   - test
 
+# Caching dependencies for faster installs
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - frontend/node_modules/
+    - backend/node_modules/
+
+# Anchors for reusable settings
+.default-job: &default-job
+  image: node:21
+  before_script:
+    - echo "Setting up..."
+
 # TypeScript Linting
 lint_FE:
   <<: *default-job
@@ -24,19 +37,7 @@ lint_BE:
     - npx tsc --noEmit
     - npx eslint . --ext .ts
 
-# Caching dependencies for faster installs
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - frontend/node_modules/
-    - backend/node_modules/
-
-# Anchors for reusable settings
-.default-job: &default-job
-  image: node:21
-  before_script:
-    - echo "Setting up..."
-
+# Build Frontend
 build_FE:
   <<: *default-job
   stage: build
@@ -50,6 +51,7 @@ build_FE:
       - frontend/node_modules/ # Keep modules for tests
       - frontend/build/
 
+# Build Backend
 build_BE:
   <<: *default-job
   stage: build
@@ -63,6 +65,7 @@ build_BE:
       - backend/node_modules/ # Keep modules for tests
       - backend/dist/
 
+# Test Frontend
 test_FE:
   <<: *default-job
   stage: test
@@ -73,6 +76,7 @@ test_FE:
     - cd frontend
     - npm test || echo "No frontend tests found"
 
+# Test Backend
 test_BE:
   <<: *default-job
   stage: test
