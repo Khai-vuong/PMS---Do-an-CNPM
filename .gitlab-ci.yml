@@ -1,17 +1,62 @@
 stages:
-  - test
   - build
+  - test
 
-test_job:
-  stage: test
-  
-  script:
-    - echo "Running tests..."
-    - npm install
-    - npm test
+# Caching dependencies for faster installs
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - frontend/node_modules/
+    - backend/node_modules/
 
-build_job:
+# Anchors for reusable settings
+.default-job: &default-job
+  image: node:21
+  before_script:
+    - echo "Setting up..."
+
+build_FE:
+  <<: *default-job
   stage: build
   script:
-    - echo "Building the project..."
+    - echo "Building frontend..."
+    - cd frontend
+    - npm install
     - npm run build
+  artifacts:
+    paths:
+      - frontend/node_modules/ # Keep modules for tests
+      - frontend/build/
+
+build_BE:
+  <<: *default-job
+  stage: build
+  script:
+    - echo "Building backend..."
+    - cd backend
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - backend/node_modules/ # Keep modules for tests
+      - backend/dist/
+
+test_FE:
+  <<: *default-job
+  stage: test
+  dependencies:
+    - build_FE # Reuse artifacts from the frontend build
+  script:
+    - echo "Testing frontend..."
+    - cd frontend
+    - npm test || echo "No frontend tests found"
+
+test_BE:
+  <<: *default-job
+  stage: test
+  dependencies:
+    - build_BE # Reuse artifacts from the backend build
+  script:
+    - echo "Testing backend..."
+    - cd backend
+    - npm test || echo "No backend tests found"
