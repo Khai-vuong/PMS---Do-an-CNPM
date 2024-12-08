@@ -1,6 +1,5 @@
 import "./Pmconsole.css";
 import axios from "axios";
-import { authorize } from "passport";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

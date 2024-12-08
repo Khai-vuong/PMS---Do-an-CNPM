@@ -1,6 +1,28 @@
 stages:
+  - lint
   - build
   - test
+
+# TypeScript Linting
+lint_FE:
+  <<: *default-job
+  stage: lint
+  script:
+    - echo "Linting frontend..."
+    - cd frontend
+    - npm install
+    - npx tsc --noEmit
+    - npx eslint . --ext .ts,.tsx
+
+lint_BE:
+  <<: *default-job
+  stage: lint
+  script:
+    - echo "Linting backend..."
+    - cd backend
+    - npm install
+    - npx tsc --noEmit
+    - npx eslint . --ext .ts
 
 # Caching dependencies for faster installs
 cache:
