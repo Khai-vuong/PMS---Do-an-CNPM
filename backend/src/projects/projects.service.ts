@@ -296,18 +296,30 @@ export class ProjectsService {
 
 
   async sendAuthNotification(userID: string, memberId: string, projectId: string) {
-    await this.prisma.mail.create({
-        data: {
-            content: `${userID} has toggled your role in project ${projectId}`,
-            category: 'Authorization',
-            recipient: {
-                connect: { uid: memberId }
-            },
-            merge_request: {
-                connect: { mrid: "cefb8f" }   //Void merge request
-            }
-        }
+    const user = this.prisma.user.findUnique({
+      where: { uid: userID },
     });
+
+    const project = this.prisma.project.findUnique({
+      where : { pid: projectId },
+    });
+
+    Promise.all([user, project]).then(async ([user, project]) => {
+        await this.prisma.mail.create({
+          data: {
+              content: `${user.username} has toggled your role in project ${project.name}`,
+              category: 'Authorization',
+              recipient: {
+                  connect: { uid: memberId }
+              },
+              merge_request: {
+                  connect: { mrid: "cefb8f" }   //Void merge request
+              }
+          }
+      });
+    });
+
+
 }
     
 
